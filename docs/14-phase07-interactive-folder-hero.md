@@ -56,9 +56,23 @@ Cover, title, optional category, index, restrained arrow. Semantic link: `Open p
 
 ## Layout
 
-Desktop: 5/7 grid split. Title copy left, folder right. `white-space: nowrap` for English “Art Director” where space allows.
+Single centered column on all breakpoints:
 
-Mobile: stacked, compact folder (~17–20rem), decorative sheets hidden, touch instruction instead of drag copy when drag is disabled.
+1. Eyebrow
+2. H1
+3. Folder
+4. Explore My Work ↓
+5. Statement
+6. CTAs
+
+Desktop and mobile share the same semantic order. Drag instruction is visually hidden and exposed through `aria-describedby` on the folder scene.
+
+## Folder Geometry
+
+- Shell: `aspect-ratio: 1.28 / 1`, width `min(88vw, 34rem)`
+- Back panel with attached tab (`::before`)
+- Front pocket: lower 43%, visible top lip
+- Cards: portrait 4/5 sheets inserted into the pocket (lower portion hidden)
 
 ## Accessibility
 

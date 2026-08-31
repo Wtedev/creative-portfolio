@@ -23,6 +23,11 @@ export function DecorativeFolderSheet({ sheet, scale = 1 }: DecorativeFolderShee
       style={style}
       aria-hidden="true"
       data-testid={`folder-decorative-${sheet.index}`}
-    />
+    >
+      <span className="folder-decorative-sheet__grid" />
+      <span className="folder-decorative-sheet__mark">
+        {String(sheet.index + 1).padStart(2, '0')}
+      </span>
+    </div>
   );
 }

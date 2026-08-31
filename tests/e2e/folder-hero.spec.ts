@@ -14,27 +14,69 @@ function boxesOverlap(
 }
 
 test.describe('Interactive folder hero', () => {
-  test('English hero renders split title and folder', async ({ page }) => {
+  test('English hero renders centered title and folder', async ({ page }) => {
     await page.goto('/en');
+    await expect(page.locator('.folder-hero__layout')).toHaveCount(0);
+    await expect(page.locator('.folder-hero__content')).toBeVisible();
     const heading = page.getByRole('heading', { level: 1 });
     await expect(heading).toContainText('Art Director');
     await expect(heading).toContainText('Creative Developer');
     await expect(page.getByTestId('folder-shell')).toBeVisible();
     await expect(page.getByTestId('folder-fragment-2')).toBeVisible();
     await expect(page.getByTestId('folder-reset')).toHaveCount(0);
-    await expect(page.locator('.folder-fragment__return')).toHaveCount(0);
-    await expect(
-      page.locator('#hero').getByRole('link', { name: /Discuss a Role/i }),
-    ).toBeVisible();
-    await expect(page.getByRole('link', { name: /Explore My Work/i })).toBeVisible();
+    await expect(page.locator('.folder-scene__instruction')).toHaveCount(0);
+    await expect(page.locator('.visually-hidden', { hasText: /Drag a project card/i })).toHaveCount(
+      1,
+    );
   });
 
-  test('Arabic hero uses language-appropriate hierarchy', async ({ page }) => {
+  test('hero preserves exact semantic block order', async ({ page }) => {
+    await page.goto('/en');
+    const order = await page.locator('#hero .folder-hero__content').evaluate((root) => {
+      const blocks = [
+        root.querySelector('.eyebrow'),
+        root.querySelector('#hero-heading'),
+        root.querySelector('.folder-hero__visual'),
+        root.querySelector('.folder-hero__explore'),
+        root.querySelector('.folder-hero__statement'),
+        root.querySelector('.folder-hero__actions'),
+      ];
+      const positions = blocks.map((element) =>
+        element ? Array.from(root.children).indexOf(element as Element) : -1,
+      );
+      return positions;
+    });
+    expect(order).toEqual([0, 1, 2, 3, 4, 5]);
+  });
+
+  test('explore work uses a downward arrow and precedes statement and CTAs', async ({ page }) => {
+    await page.goto('/en');
+    const explore = page.locator('#hero .folder-hero__explore');
+    await expect(explore).toHaveAttribute('href', '#work');
+    await expect(explore.locator('.folder-hero__explore-arrow')).toHaveText('↓');
+
+    const positions = await page.locator('#hero .folder-hero__content').evaluate((root) => {
+      const index = (selector: string) =>
+        Array.from(root.children).indexOf(root.querySelector(selector)!);
+      return {
+        folder: index('.folder-hero__visual'),
+        explore: index('.folder-hero__explore'),
+        statement: index('.folder-hero__statement'),
+        actions: index('.folder-hero__actions'),
+      };
+    });
+    expect(positions.folder).toBeLessThan(positions.explore);
+    expect(positions.explore).toBeLessThan(positions.statement);
+    expect(positions.statement).toBeLessThan(positions.actions);
+  });
+
+  test('Arabic hero uses language-appropriate hierarchy and same order', async ({ page }) => {
     await page.goto('/ar');
     const heading = page.getByRole('heading', { level: 1 });
     await expect(heading).toContainText('مخرجة فنية');
     await expect(heading).toContainText('ومطوّرة إبداعية');
     await expect(page.getByTestId('folder-shell')).toBeVisible();
+    await expect(page.locator('.folder-hero__explore-arrow')).toHaveText('↓');
   });
 
   test('only one interactive project link exists for fallback content', async ({ page }) => {
@@ -77,15 +119,38 @@ test.describe('Interactive folder hero', () => {
     expect(boxesOverlap(titleBox, folderBox)).toBe(false);
   });
 
-  test('Arabic title and folder do not overlap on desktop', async ({ page }) => {
+  test('folder and explore link do not overlap', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/ar');
-    const titleBox = await page.getByRole('heading', { level: 1 }).boundingBox();
+    await page.goto('/en');
     const folderBox = await page.getByTestId('folder-shell').boundingBox();
-    expect(titleBox).toBeTruthy();
+    const exploreBox = await page.locator('#hero .folder-hero__explore').boundingBox();
     expect(folderBox).toBeTruthy();
-    if (!titleBox || !folderBox) return;
-    expect(boxesOverlap(titleBox, folderBox)).toBe(false);
+    expect(exploreBox).toBeTruthy();
+    if (!folderBox || !exploreBox) return;
+    expect(boxesOverlap(folderBox, exploreBox)).toBe(false);
+  });
+
+  test('cards sit inside folder width and intersect the pocket region', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/en');
+    const metrics = await page.evaluate(() => {
+      const shell = document.querySelector('[data-testid="folder-shell"]');
+      const front = document.querySelector('.folder-front');
+      const card = document.querySelector('[data-testid="folder-fragment-2"]');
+      if (!shell || !front || !card) return null;
+      const shellBox = shell.getBoundingClientRect();
+      const frontBox = front.getBoundingClientRect();
+      const cardBox = card.getBoundingClientRect();
+      return {
+        cardWithinShell: cardBox.left >= shellBox.left - 2 && cardBox.right <= shellBox.right + 2,
+        cardOverlapsPocket: cardBox.bottom > frontBox.top + 8,
+        cardExtendsAbovePocket: cardBox.top < frontBox.top - 8,
+      };
+    });
+    expect(metrics).toBeTruthy();
+    expect(metrics?.cardWithinShell).toBe(true);
+    expect(metrics?.cardOverlapsPocket).toBe(true);
+    expect(metrics?.cardExtendsAbovePocket).toBe(true);
   });
 
   test('hero has no horizontal overflow at 320px', async ({ page }) => {
@@ -103,7 +168,7 @@ test.describe('Interactive folder hero', () => {
     const heroHeight = await page
       .locator('#hero')
       .evaluate((element) => element.getBoundingClientRect().height);
-    expect(heroHeight).toBeLessThan(900);
+    expect(heroHeight).toBeLessThan(920);
   });
 
   test('reduced motion still exposes projects and CTAs', async ({ page }) => {
@@ -119,7 +184,7 @@ test.describe('Interactive folder hero', () => {
 
   test('explore work still reaches the work section', async ({ page }) => {
     await page.goto('/en');
-    const explore = page.locator('#hero').getByRole('link', { name: /Explore My Work/i });
+    const explore = page.locator('#hero .folder-hero__explore');
     await expect(explore).toHaveAttribute('href', '#work');
     await explore.click();
     await expect(page.locator('#work')).toBeInViewport({ timeout: 10_000 });

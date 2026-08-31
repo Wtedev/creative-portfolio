@@ -24,10 +24,10 @@ export type FolderStackSlot = {
 
 /** Art-directed initial positions — deterministic for SSR/hydration. */
 export const FOLDER_STACK_LAYOUT: readonly FolderStackSlot[] = [
-  { x: -42, y: -60, rotate: -6, z: 1 },
-  { x: -14, y: -76, rotate: -2, z: 2 },
-  { x: 16, y: -72, rotate: 3, z: 3 },
-  { x: 40, y: -54, rotate: 6, z: 4 },
+  { x: -48, y: -20, rotate: -6, z: 1 },
+  { x: -16, y: -34, rotate: -2, z: 2 },
+  { x: 18, y: -32, rotate: 3, z: 3 },
+  { x: 46, y: -18, rotate: 6, z: 4 },
 ] as const;
 
 export const MAX_HERO_FRAGMENTS = 4;

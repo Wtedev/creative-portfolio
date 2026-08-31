@@ -33,7 +33,7 @@ describe('drag intent', () => {
 
 describe('folder layout helpers', () => {
   it('returns deterministic stack slots', () => {
-    expect(getStackSlot(0)).toEqual({ x: -42, y: -60, rotate: -6, z: 1 });
+    expect(getStackSlot(0)).toEqual({ x: -48, y: -20, rotate: -6, z: 1 });
     expect(getStackSlot(0)).toEqual(getStackSlot(0));
     expect(getStackSlot(0).rotate).not.toBe(getStackSlot(1).rotate);
   });

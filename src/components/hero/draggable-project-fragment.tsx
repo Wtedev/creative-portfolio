@@ -121,14 +121,14 @@ export function DraggableProjectFragment({
         onPointerDown={(event) => event.stopPropagation()}
       >
         <div className="folder-fragment__sheet">
-          <div className="folder-fragment__media" aria-hidden={Boolean(fragment.cover)}>
+          <div className="folder-fragment__media">
             {fragment.cover ? (
               // eslint-disable-next-line @next/next/no-img-element -- lightweight hero thumbnails
               <img src={fragment.cover} alt="" className="folder-fragment__image" loading="lazy" />
             ) : (
               <PlaceholderMedia
                 label={fragment.coverAlt}
-                variant="landscape"
+                variant="portrait"
                 className="folder-fragment__placeholder"
               />
             )}

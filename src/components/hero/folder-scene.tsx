@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState, useSyncExternalStore } from 'react';
+import { useCallback, useId, useState, useSyncExternalStore } from 'react';
 import { usePathname } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 
@@ -70,6 +70,7 @@ export function FolderScene({ content }: FolderSceneProps) {
   const t = useTranslations('hero');
   const locale = useLocale();
   const pathname = usePathname();
+  const instructionId = useId();
   const { projects, decorativeSheets } = content;
   const sceneKey = `${locale}:${pathname}:${projects.map((fragment) => fragment.id).join('|')}`;
   const [runtime, setRuntime] = useState(() => createInitialRuntime(projects));
@@ -95,7 +96,7 @@ export function FolderScene({ content }: FolderSceneProps) {
   const narrow = useSyncExternalStore(subscribeNarrow, getNarrowSnapshot, getServerFalse);
 
   const dragEnabled = !reducedMotion && finePointer && !narrow;
-  const stackScale = narrow ? 0.72 : 1;
+  const stackScale = narrow ? 0.82 : 1;
 
   const handleDragStart = useCallback((id: string) => {
     setActiveDragId(id);
@@ -140,13 +141,12 @@ export function FolderScene({ content }: FolderSceneProps) {
       className="folder-scene"
       data-narrow={narrow ? 'true' : 'false'}
       data-dragging={activeDragId ? 'true' : 'false'}
-      style={{ ['--folder-light' as string]: activeDragId ? 0.38 : 0.18 }}
+      aria-describedby={instructionId}
+      style={{ ['--folder-light' as string]: activeDragId ? 0.34 : 0.16 }}
     >
-      {dragEnabled ? (
-        <p className="folder-scene__instruction text-small">{t('folderInstruction')}</p>
-      ) : (
-        <p className="folder-scene__instruction text-small">{t('folderInstructionTouch')}</p>
-      )}
+      <p id={instructionId} className="visually-hidden">
+        {dragEnabled ? t('folderInstruction') : t('folderInstructionTouch')}
+      </p>
       <FolderShell label={t('selectedWorks')} dragging={Boolean(activeDragId)}>
         {decorativeSheets.map((sheet) => (
           <DecorativeFolderSheet key={sheet.id} sheet={sheet} scale={stackScale} />
