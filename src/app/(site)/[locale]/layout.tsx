@@ -1,0 +1,71 @@
+import { hasLocale, NextIntlClientProvider } from 'next-intl';
+import { getMessages, setRequestLocale } from 'next-intl/server';
+import { notFound } from 'next/navigation';
+import type { ReactNode } from 'react';
+
+import { SkipLink } from '@/components/accessibility/skip-link';
+import { SiteFooter } from '@/components/layout/site-footer';
+import { SiteHeader } from '@/components/navigation/site-header';
+import { ThemeProvider } from '@/components/theme/theme-provider';
+import { localeDirections } from '@/i18n/config';
+import { routing } from '@/i18n/routing';
+import { getPortfolioContent } from '@/lib/content/provider';
+import { ibmPlexArabic, manrope } from '@/lib/fonts';
+import { getThemeColor } from '@/lib/seo/metadata';
+
+import '../../globals.css';
+
+type LocaleLayoutProps = {
+  children: ReactNode;
+  params: Promise<{ locale: string }>;
+};
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export default async function LocaleLayout({ children, params }: LocaleLayoutProps) {
+  const { locale } = await params;
+
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+
+  setRequestLocale(locale);
+
+  const messages = await getMessages();
+  const { siteSettings } = await getPortfolioContent();
+  const direction = localeDirections[locale];
+
+  return (
+    <html
+      lang={locale}
+      dir={direction}
+      className={`${manrope.variable} ${ibmPlexArabic.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <meta
+          name="theme-color"
+          content={getThemeColor(true)}
+          media="(prefers-color-scheme: dark)"
+        />
+        <meta
+          name="theme-color"
+          content={getThemeColor(false)}
+          media="(prefers-color-scheme: light)"
+        />
+      </head>
+      <body data-locale={locale} suppressHydrationWarning>
+        <ThemeProvider defaultTheme={siteSettings.defaultTheme}>
+          <NextIntlClientProvider messages={messages}>
+            <SkipLink />
+            <SiteHeader siteTitle={siteSettings.siteTitle} />
+            {children}
+            <SiteFooter settings={siteSettings} />
+          </NextIntlClientProvider>
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}

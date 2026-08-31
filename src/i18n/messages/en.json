@@ -1,0 +1,115 @@
+{
+  "meta": {
+    "siteTitle": "Art Director & Creative Developer",
+    "siteDescription": "Portfolio showcasing art direction, visual identities, campaigns, and creative websites."
+  },
+  "navigation": {
+    "work": "Work",
+    "capabilities": "Capabilities",
+    "tools": "Tools",
+    "process": "Process",
+    "about": "About",
+    "contact": "Contact",
+    "skipToContent": "Skip to content",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "studio": "Studio"
+  },
+  "hero": {
+    "eyebrow": "Independent / Available for selected roles & projects",
+    "title": "Art Director & Creative Developer",
+    "statement": "I build visual identities, campaigns, and creative websites around strong ideas.",
+    "discussRole": "Discuss a Role",
+    "startProject": "Start a Project",
+    "exploreWork": "Explore My Work"
+  },
+  "sections": {
+    "work": "Selected Work",
+    "workIntro": "A curated selection of identity, campaign, and digital projects.",
+    "capabilities": "Capabilities",
+    "capabilitiesIntro": "Outcome-oriented direction across concept, system, and experience.",
+    "tools": "Creative Technology Toolkit",
+    "toolsIntro": "Tools used honestly across design, motion, and creative development.",
+    "process": "Selected Process",
+    "processIntro": "A concise sequence from idea to living experience.",
+    "about": "About",
+    "aboutIntro": "Professional fit, focus, and availability.",
+    "contact": "Have a role or project in mind?"
+  },
+  "process": {
+    "steps": {
+      "frame": {
+        "title": "Frame the idea",
+        "description": "Clarify the strategic idea, audience, and creative ambition."
+      },
+      "language": {
+        "title": "Define the visual language",
+        "description": "Shape tone, typography, image direction, and key visual signals."
+      },
+      "system": {
+        "title": "Build the system",
+        "description": "Extend the language into coherent rules, layouts, and components."
+      },
+      "life": {
+        "title": "Bring it to life",
+        "description": "Prototype, refine motion, and ship responsive experiences."
+      }
+    }
+  },
+  "tools": {
+    "scrollPrev": "Scroll tools left",
+    "scrollNext": "Scroll tools right",
+    "trackLabel": "Creative technology tools",
+    "proficiency": {
+      "working": "Working",
+      "comfortable": "Comfortable",
+      "exploring": "Exploring"
+    }
+  },
+  "about": {
+    "location": "Location",
+    "availability": "Availability",
+    "focus": "Focus",
+    "focusValue": "Art direction, visual systems, campaigns, and creative websites.",
+    "portraitAlt": "Portrait"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "locale": {
+    "label": "Language",
+    "switchTo": "Switch to {language}"
+  },
+  "project": {
+    "backToWork": "Back to work",
+    "viewCaseStudy": "View Case Study",
+    "client": "Client",
+    "year": "Year",
+    "role": "Role",
+    "notFound": "Project not found",
+    "sampleLabel": "Sample placeholder project"
+  },
+  "contact": {
+    "email": "Email",
+    "linkedin": "LinkedIn",
+    "availability": "Availability"
+  },
+  "footer": {
+    "backToTop": "Back to top",
+    "copyright": "© {year} {name}. All rights reserved."
+  },
+  "studio": {
+    "setupTitle": "Sanity Studio Setup Required",
+    "setupDescription": "Configure your Sanity credentials in .env.local to enable the CMS studio.",
+    "setupHint": "Copy .env.example to .env.local and add NEXT_PUBLIC_SANITY_PROJECT_ID and related variables."
+  },
+  "placeholders": {
+    "image": "Placeholder image",
+    "video": "Placeholder video",
+    "portrait": "Portrait placeholder",
+    "processStep": "Process step placeholder"
+  }
+}
