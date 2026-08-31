@@ -10,6 +10,9 @@ import {
   clampToBounds,
   FOLDER_DRAG_CONSTRAINTS,
   FOLDER_SPRING,
+  FOLDER_Z,
+  getDecorativeSlot,
+  getProjectSlot,
   getStackSlot,
   MAX_HERO_FRAGMENTS,
 } from '@/lib/motion/folder-layout';
@@ -32,10 +35,24 @@ describe('drag intent', () => {
 });
 
 describe('folder layout helpers', () => {
-  it('returns deterministic stack slots', () => {
-    expect(getStackSlot(0)).toEqual({ x: -48, y: -20, rotate: -6, z: 1 });
-    expect(getStackSlot(0)).toEqual(getStackSlot(0));
-    expect(getStackSlot(0).rotate).not.toBe(getStackSlot(1).rotate);
+  it('returns deterministic decorative slots', () => {
+    expect(getDecorativeSlot(0)).toEqual({ x: -52, y: 18, rotate: -5, z: 2 });
+    expect(getDecorativeSlot(0)).toEqual(getDecorativeSlot(0));
+    expect(getDecorativeSlot(0).rotate).not.toBe(getDecorativeSlot(1).rotate);
+  });
+
+  it('returns a forward project slot for a single project', () => {
+    expect(getProjectSlot(0, 1)).toEqual({ x: 48, y: 12, rotate: 5, z: 3 });
+  });
+
+  it('maps legacy stack indices to decorative and project slots', () => {
+    expect(getStackSlot(0)).toEqual(getDecorativeSlot(0));
+    expect(getStackSlot(2)).toEqual(getProjectSlot(0, 1));
+  });
+
+  it('uses explicit z-index tokens', () => {
+    expect(FOLDER_Z.front).toBeGreaterThan(FOLDER_Z.card);
+    expect(FOLDER_Z.dragging).toBeGreaterThan(FOLDER_Z.front);
   });
 
   it('clamps positions to safe bounds', () => {
@@ -48,6 +65,7 @@ describe('folder layout helpers', () => {
   it('uses bounded drag constraints', () => {
     expect(FOLDER_DRAG_CONSTRAINTS.left).toBeLessThan(0);
     expect(FOLDER_DRAG_CONSTRAINTS.right).toBeGreaterThan(0);
+    expect(Math.abs(FOLDER_DRAG_CONSTRAINTS.left)).toBeLessThanOrEqual(100);
   });
 
   it('uses a controlled spring for returns', () => {

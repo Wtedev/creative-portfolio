@@ -316,6 +316,41 @@ body[data-locale='ar'] .site-header__brand {
   cursor: pointer;
 }
 
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 2.75rem;
+}
+
+.theme-toggle__icon {
+  line-height: 1;
+  font-size: 1rem;
+}
+
+@media (max-width: 767px) {
+  .theme-toggle {
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0;
+    gap: 0;
+  }
+
+  .theme-toggle__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
 /* Hero */
 .hero {
   position: relative;

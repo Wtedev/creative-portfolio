@@ -3,12 +3,12 @@
 import { motion, type PanInfo } from 'motion/react';
 import { useRef, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
 
-import { PlaceholderMedia } from '@/components/ui/placeholder-media';
 import { Link } from '@/i18n/navigation';
 import { createDragIntentTracker } from '@/lib/motion/drag-intent';
 import {
   FOLDER_DRAG_CONSTRAINTS,
   FOLDER_SPRING,
+  FOLDER_Z,
   type FolderFragmentState,
   type HeroProjectFragment,
 } from '@/lib/motion/folder-layout';
@@ -42,7 +42,7 @@ export function DraggableProjectFragment({
 
   const style = {
     ['--fragment-accent' as string]: fragment.accentColor ?? 'var(--color-accent)',
-    zIndex: state === 'dragging' ? 40 : slot.z,
+    zIndex: state === 'dragging' ? FOLDER_Z.dragging : FOLDER_Z.card,
   } as CSSProperties;
 
   const handlePointerDown = (event: ReactPointerEvent) => {
@@ -126,10 +126,10 @@ export function DraggableProjectFragment({
               // eslint-disable-next-line @next/next/no-img-element -- lightweight hero thumbnails
               <img src={fragment.cover} alt="" className="folder-fragment__image" loading="lazy" />
             ) : (
-              <PlaceholderMedia
-                label={fragment.coverAlt}
-                variant="portrait"
-                className="folder-fragment__placeholder"
+              <span
+                className="folder-fragment__fallback"
+                role="img"
+                aria-label={fragment.coverAlt}
               />
             )}
           </div>

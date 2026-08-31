@@ -24,7 +24,7 @@ export async function HeroSection({ settings, projects }: HeroSectionProps) {
     <section
       id="hero"
       aria-labelledby="hero-heading"
-      className="hero folder-hero luminous-section luminous-section--hero section-padding"
+      className="folder-hero luminous-section luminous-section--hero"
     >
       <Container>
         <div className="folder-hero__content">

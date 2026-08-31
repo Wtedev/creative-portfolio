@@ -29,6 +29,7 @@ export function ThemeToggle() {
   };
 
   const label = theme === 'light' ? t('light') : theme === 'dark' ? t('dark') : t('system');
+  const icon = resolvedTheme === 'dark' ? '◐' : '◑';
 
   if (!mounted) {
     return (
@@ -46,7 +47,10 @@ export function ThemeToggle() {
       aria-label={`${t('label')}: ${label}`}
       title={`${t('label')}: ${label}`}
     >
-      {resolvedTheme === 'dark' ? '◐' : '◑'} {label}
+      <span className="theme-toggle__icon" aria-hidden="true">
+        {icon}
+      </span>
+      <span className="theme-toggle__label">{label}</span>
     </button>
   );
 }

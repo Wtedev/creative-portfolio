@@ -9,7 +9,7 @@ import { DraggableProjectFragment } from '@/components/hero/draggable-project-fr
 import { FolderShell } from '@/components/hero/folder-shell';
 import type { HeroFolderContent } from '@/lib/content/hero-fragments';
 import {
-  getStackSlot,
+  getProjectSlot,
   type FolderFragmentState,
   type HeroProjectFragment,
 } from '@/lib/motion/folder-layout';
@@ -96,7 +96,7 @@ export function FolderScene({ content }: FolderSceneProps) {
   const narrow = useSyncExternalStore(subscribeNarrow, getNarrowSnapshot, getServerFalse);
 
   const dragEnabled = !reducedMotion && finePointer && !narrow;
-  const stackScale = narrow ? 0.82 : 1;
+  const stackScale = narrow ? 0.88 : 1;
 
   const handleDragStart = useCallback((id: string) => {
     setActiveDragId(id);
@@ -151,13 +151,13 @@ export function FolderScene({ content }: FolderSceneProps) {
         {decorativeSheets.map((sheet) => (
           <DecorativeFolderSheet key={sheet.id} sheet={sheet} scale={stackScale} />
         ))}
-        {projects.map((fragment) => {
+        {projects.map((fragment, projectIndex) => {
           const entry = runtime[fragment.id] ?? { state: 'stacked' as const };
-          const slot = getStackSlot(fragment.index);
+          const slot = getProjectSlot(projectIndex, projects.length);
           const scaledSlot = {
             x: slot.x * stackScale,
             y: slot.y * stackScale,
-            rotate: slot.rotate,
+            rotate: slot.rotate * (narrow ? 0.7 : 1),
             z: slot.z,
           };
 

@@ -22,6 +22,8 @@ test.describe('Interactive folder hero', () => {
     await expect(heading).toContainText('Art Director');
     await expect(heading).toContainText('Creative Developer');
     await expect(page.getByTestId('folder-shell')).toBeVisible();
+    await expect(page.locator('.folder-surface--back')).toBeVisible();
+    await expect(page.locator('.folder-surface--front')).toBeVisible();
     await expect(page.getByTestId('folder-fragment-2')).toBeVisible();
     await expect(page.getByTestId('folder-reset')).toHaveCount(0);
     await expect(page.locator('.folder-scene__instruction')).toHaveCount(0);
@@ -130,27 +132,60 @@ test.describe('Interactive folder hero', () => {
     expect(boxesOverlap(folderBox, exploreBox)).toBe(false);
   });
 
+  test('complete hero content is visible at 1440x900', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/en');
+    await expect(page.locator('#hero .eyebrow')).toBeInViewport();
+    await expect(page.getByRole('heading', { level: 1 })).toBeInViewport();
+    await expect(page.getByTestId('folder-shell')).toBeInViewport();
+    await expect(page.locator('#hero .folder-hero__explore')).toBeInViewport();
+    await expect(page.locator('#hero .folder-hero__statement')).toBeInViewport();
+    await expect(
+      page.locator('#hero .folder-hero__actions').getByRole('link', { name: /Start a Project/i }),
+    ).toBeInViewport();
+  });
+
+  test('explore work is visible at 1024x768', async ({ page }) => {
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await page.goto('/en');
+    await expect(page.locator('#hero .folder-hero__explore')).toBeInViewport();
+    await expect(page.getByTestId('folder-shell')).toBeInViewport();
+  });
+
   test('cards sit inside folder width and intersect the pocket region', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/en');
     const metrics = await page.evaluate(() => {
       const shell = document.querySelector('[data-testid="folder-shell"]');
-      const front = document.querySelector('.folder-front');
+      const front = document.querySelector('.folder-surface--front');
       const card = document.querySelector('[data-testid="folder-fragment-2"]');
       if (!shell || !front || !card) return null;
       const shellBox = shell.getBoundingClientRect();
       const frontBox = front.getBoundingClientRect();
       const cardBox = card.getBoundingClientRect();
+      const pocketTop = frontBox.top + frontBox.height * 0.52;
       return {
         cardWithinShell: cardBox.left >= shellBox.left - 2 && cardBox.right <= shellBox.right + 2,
-        cardOverlapsPocket: cardBox.bottom > frontBox.top + 8,
-        cardExtendsAbovePocket: cardBox.top < frontBox.top - 8,
+        cardOverlapsPocket: cardBox.bottom > pocketTop + 4,
+        cardExtendsAbovePocket: cardBox.top < pocketTop - 8,
+        cardTitleAbovePocket: cardBox.top + cardBox.height * 0.78 < pocketTop + 12,
       };
     });
     expect(metrics).toBeTruthy();
     expect(metrics?.cardWithinShell).toBe(true);
     expect(metrics?.cardOverlapsPocket).toBe(true);
     expect(metrics?.cardExtendsAbovePocket).toBe(true);
+    expect(metrics?.cardTitleAbovePocket).toBe(true);
+  });
+
+  test('desktop folder width stays within target range', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/en');
+    const width = await page.getByTestId('folder-shell').evaluate((element) => {
+      return element.getBoundingClientRect().width;
+    });
+    expect(width).toBeGreaterThanOrEqual(27 * 16 - 8);
+    expect(width).toBeLessThanOrEqual(31 * 16 + 8);
   });
 
   test('hero has no horizontal overflow at 320px', async ({ page }) => {
@@ -162,13 +197,20 @@ test.describe('Interactive folder hero', () => {
     expect(overflow).toBe(false);
   });
 
-  test('mobile hero stays compact', async ({ page }) => {
+  test('mobile hero stays compact and theme control is icon-sized', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/en');
     const heroHeight = await page
       .locator('#hero')
       .evaluate((element) => element.getBoundingClientRect().height);
-    expect(heroHeight).toBeLessThan(920);
+    expect(heroHeight).toBeLessThan(900);
+
+    const themeToggle = page.locator('.site-header .theme-toggle').first();
+    const toggleBox = await themeToggle.boundingBox();
+    expect(toggleBox).toBeTruthy();
+    if (!toggleBox) return;
+    expect(toggleBox.height).toBeLessThanOrEqual(48);
+    expect(toggleBox.width).toBeLessThanOrEqual(48);
   });
 
   test('reduced motion still exposes projects and CTAs', async ({ page }) => {
