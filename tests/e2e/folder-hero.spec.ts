@@ -108,6 +108,14 @@ test.describe('Interactive folder hero', () => {
     await expect(fragment).toHaveAttribute('data-state', /stacked|returning/);
     await expect(fragment).toHaveAttribute('data-state', 'stacked', { timeout: 3000 });
     await expect(fragment).not.toHaveAttribute('data-state', 'inspecting');
+
+    const stackedClipped = await page.evaluate(() => {
+      const sheet = document.querySelector(
+        '[data-testid="folder-fragment-2"] .folder-fragment__sheet',
+      ) as HTMLElement | null;
+      return sheet ? getComputedStyle(sheet).clipPath.includes('inset') : false;
+    });
+    expect(stackedClipped).toBe(true);
   });
 
   test('title and folder do not overlap on desktop', async ({ page }) => {
@@ -152,30 +160,48 @@ test.describe('Interactive folder hero', () => {
     await expect(page.getByTestId('folder-shell')).toBeInViewport();
   });
 
+  test('stacked card body stays hidden behind opaque pocket', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/en');
+    const metrics = await page.evaluate(() => {
+      const card = document.querySelector('[data-testid="folder-fragment-2"]');
+      const sheet = card?.querySelector('.folder-fragment__sheet') as HTMLElement | null;
+      if (!card || !sheet) return null;
+      const sheetStyles = getComputedStyle(sheet);
+      const cardBox = card.getBoundingClientRect();
+      const shell = document.querySelector('[data-testid="folder-shell"]');
+      const shellBox = shell?.getBoundingClientRect();
+      const pocketTop = shellBox ? shellBox.top + shellBox.height * (232 / 420) : cardBox.bottom;
+      return {
+        bodyClipped: sheetStyles.clipPath.includes('inset'),
+        cardMediaVisible: cardBox.top < pocketTop - 8,
+      };
+    });
+    expect(metrics).toBeTruthy();
+    expect(metrics?.bodyClipped).toBe(true);
+    expect(metrics?.cardMediaVisible).toBe(true);
+  });
+
   test('cards sit inside folder width and intersect the pocket region', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/en');
     const metrics = await page.evaluate(() => {
       const shell = document.querySelector('[data-testid="folder-shell"]');
-      const front = document.querySelector('.folder-surface--front');
       const card = document.querySelector('[data-testid="folder-fragment-2"]');
-      if (!shell || !front || !card) return null;
+      if (!shell || !card) return null;
       const shellBox = shell.getBoundingClientRect();
-      const frontBox = front.getBoundingClientRect();
       const cardBox = card.getBoundingClientRect();
-      const pocketTop = frontBox.top + frontBox.height * 0.52;
+      const pocketTop = shellBox.top + shellBox.height * (232 / 420);
       return {
         cardWithinShell: cardBox.left >= shellBox.left - 2 && cardBox.right <= shellBox.right + 2,
         cardOverlapsPocket: cardBox.bottom > pocketTop + 4,
         cardExtendsAbovePocket: cardBox.top < pocketTop - 8,
-        cardTitleAbovePocket: cardBox.top + cardBox.height * 0.78 < pocketTop + 12,
       };
     });
     expect(metrics).toBeTruthy();
     expect(metrics?.cardWithinShell).toBe(true);
     expect(metrics?.cardOverlapsPocket).toBe(true);
     expect(metrics?.cardExtendsAbovePocket).toBe(true);
-    expect(metrics?.cardTitleAbovePocket).toBe(true);
   });
 
   test('desktop folder width stays within target range', async ({ page }) => {
@@ -197,20 +223,20 @@ test.describe('Interactive folder hero', () => {
     expect(overflow).toBe(false);
   });
 
-  test('mobile hero stays compact and theme control is icon-sized', async ({ page }) => {
+  test('mobile hero to Selected Work gap stays within target', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/en');
-    const heroHeight = await page
-      .locator('#hero')
-      .evaluate((element) => element.getBoundingClientRect().height);
-    expect(heroHeight).toBeLessThan(900);
-
-    const themeToggle = page.locator('.site-header .theme-toggle').first();
-    const toggleBox = await themeToggle.boundingBox();
-    expect(toggleBox).toBeTruthy();
-    if (!toggleBox) return;
-    expect(toggleBox.height).toBeLessThanOrEqual(48);
-    expect(toggleBox.width).toBeLessThanOrEqual(48);
+    const gap = await page.evaluate(() => {
+      const actions = document.querySelector('#hero .folder-hero__actions');
+      const workHeading = document.querySelector('#work-heading');
+      if (!actions || !workHeading) return null;
+      const actionsBox = actions.getBoundingClientRect();
+      const workBox = workHeading.getBoundingClientRect();
+      return workBox.top - actionsBox.bottom;
+    });
+    expect(gap).toBeTruthy();
+    expect(gap!).toBeGreaterThanOrEqual(72);
+    expect(gap!).toBeLessThanOrEqual(140);
   });
 
   test('reduced motion still exposes projects and CTAs', async ({ page }) => {

@@ -26,7 +26,7 @@
   --motion-section: 800ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
-  --header-height: 4rem;
+  --header-height: 4.75rem;
   --scroll-offset: calc(var(--header-height) + var(--space-4));
 
   --z-base: 0;
@@ -117,6 +117,12 @@
   --color-glow-strong: rgba(112, 71, 217, 0.2);
   --color-nav-bg: rgba(243, 241, 245, 0.88);
   --color-grid-line: rgba(93, 72, 130, 0.08);
+}
+
+@media (max-width: 1119px) {
+  :root {
+    --header-height: 4.5rem;
+  }
 }
 
 @media (min-width: 768px) {

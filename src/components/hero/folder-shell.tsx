@@ -13,11 +13,11 @@ const FOLDER_BACK_PATH =
 const FOLDER_BACK_HIGHLIGHT =
   'M 72 108 Q 52 108 52 128 L 52 358 Q 52 378 72 378 L 568 378 Q 588 378 588 358 L 588 128 Q 588 108 568 108 L 428 108 L 398 68 Q 390 58 372 58 L 248 58 Q 230 58 222 68 L 196 94';
 
-/** Front pocket — lower ~40% of folder height. */
+/** Front pocket — lower ~35% of folder height, lip near y=232. */
 const FOLDER_POCKET_PATH =
-  'M 44 238 Q 44 218 66 218 L 574 218 Q 596 218 596 240 L 596 366 Q 596 394 568 394 L 72 394 Q 44 394 44 366 Z';
+  'M 44 248 Q 44 232 66 232 L 574 232 Q 596 232 596 248 L 596 366 Q 596 394 568 394 L 72 394 Q 44 394 44 366 Z';
 
-const FOLDER_POCKET_LIP = 'M 68 218 Q 320 208 572 218';
+const FOLDER_POCKET_LIP = 'M 68 232 Q 320 224 572 232';
 
 const FOLDER_POCKET_REFLECTION = 'M 52 248 L 588 248 L 588 262 L 52 278 Z';
 
@@ -64,7 +64,7 @@ export function FolderShell({ label, dragging = false, children }: FolderShellPr
         aria-hidden="true"
       >
         <defs>
-          <linearGradient id="folder-front-gradient" x1="320" y1="218" x2="320" y2="394">
+          <linearGradient id="folder-front-gradient" x1="320" y1="232" x2="320" y2="394">
             <stop offset="0%" stopColor="var(--folder-front-start)" />
             <stop offset="100%" stopColor="var(--folder-front-end)" />
           </linearGradient>

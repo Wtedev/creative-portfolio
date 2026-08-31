@@ -4,6 +4,7 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 
+import { CloseIcon, MenuIcon } from '@/components/navigation/menu-icons';
 import { LocaleSwitcher } from '@/components/locale/locale-switcher';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/ui/container';
@@ -88,7 +89,7 @@ export function SiteHeader({ siteTitle }: SiteHeaderProps) {
 
     const panel = panelRef.current;
     const focusable = panel?.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), select, [tabindex]:not([tabindex="-1"])',
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
     );
     const first = focusable?.[0];
     const last = focusable?.[focusable.length - 1];
@@ -164,7 +165,7 @@ export function SiteHeader({ siteTitle }: SiteHeaderProps) {
               onClick={() => setMenuOpen((open) => !open)}
             >
               <span className="visually-hidden">{menuOpen ? t('closeMenu') : t('openMenu')}</span>
-              <span aria-hidden="true">{menuOpen ? '×' : '☰'}</span>
+              {menuOpen ? <CloseIcon /> : <MenuIcon />}
             </button>
           </div>
         </div>
@@ -195,10 +196,6 @@ export function SiteHeader({ siteTitle }: SiteHeaderProps) {
             <Button href="#contact" variant="primary" onClick={closeMenu}>
               {tHero('startProject')}
             </Button>
-            <div onClick={closeMenu}>
-              <LocaleSwitcher />
-            </div>
-            <ThemeToggle />
           </div>
         </Container>
       </div>

@@ -24,19 +24,19 @@ export type FolderStackSlot = {
 
 /** Decorative sheet fan — behind project cards. */
 const DECORATIVE_SLOTS: readonly FolderStackSlot[] = [
-  { x: -52, y: 18, rotate: -5, z: 2 },
-  { x: -2, y: 4, rotate: -1, z: 2 },
+  { x: -46, y: 22, rotate: -4, z: 2 },
+  { x: -6, y: 10, rotate: -1, z: 2 },
 ] as const;
 
 /** Project card fan when multiple projects fill the folder. */
 const PROJECT_FAN: readonly FolderStackSlot[] = [
-  { x: -52, y: 18, rotate: -5, z: 3 },
-  { x: -16, y: 10, rotate: -2, z: 3 },
-  { x: 44, y: 14, rotate: 4, z: 3 },
-  { x: 50, y: 12, rotate: 6, z: 3 },
+  { x: -46, y: 22, rotate: -4, z: 3 },
+  { x: -12, y: 14, rotate: -2, z: 3 },
+  { x: 36, y: 18, rotate: 4, z: 3 },
+  { x: 42, y: 16, rotate: 5, z: 3 },
 ] as const;
 
-const SINGLE_PROJECT_SLOT: FolderStackSlot = { x: 48, y: 12, rotate: 5, z: 3 };
+const SINGLE_PROJECT_SLOT: FolderStackSlot = { x: 42, y: 16, rotate: 4, z: 3 };
 
 export const MAX_HERO_FRAGMENTS = 4;
 export const MAX_DECORATIVE_SHEETS = 2;

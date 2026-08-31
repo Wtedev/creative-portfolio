@@ -6,7 +6,8 @@
   align-items: center;
   justify-content: center;
   min-block-size: auto;
-  padding-block: clamp(2rem, 4vh, 3.5rem) clamp(3rem, 6vh, 5rem);
+  padding-block-start: clamp(1.75rem, 3.5vh, 2.75rem);
+  padding-block-end: clamp(2rem, 4vh, 3rem);
   scroll-margin-top: 0;
 }
 
@@ -28,7 +29,7 @@
 }
 
 .folder-hero__content > .eyebrow {
-  margin-block-end: calc(var(--space-1) * -0.5);
+  margin-block-end: 0;
 }
 
 .folder-hero__title {
@@ -48,7 +49,7 @@
   font-family: var(--font-display-serif);
   font-style: italic;
   font-weight: 500;
-  font-size: clamp(3.75rem, 6.2vw, 6rem);
+  font-size: clamp(3.5rem, 5.7vw, 5.6rem);
   color: var(--color-text);
   white-space: nowrap;
 }
@@ -57,7 +58,7 @@
   font-family: var(--font-en);
   font-style: normal;
   font-weight: 500;
-  font-size: clamp(1.65rem, 2.65vw, 2.65rem);
+  font-size: clamp(1.55rem, 2.35vw, 2.4rem);
   letter-spacing: -0.02em;
   color: color-mix(in srgb, var(--color-text) 78%, var(--color-accent-soft));
   white-space: nowrap;
@@ -80,14 +81,14 @@ body[data-locale='ar'] .folder-hero__title-serif {
   font-style: normal;
   font-weight: 700;
   line-height: 1.22;
-  font-size: clamp(2.75rem, 12vw, 4rem);
+  font-size: clamp(2.65rem, 11vw, 3.6rem);
   white-space: normal;
 }
 
 body[data-locale='ar'] .folder-hero__title-sans {
   font-family: var(--font-ar);
   font-weight: 500;
-  font-size: clamp(1.3rem, 6vw, 1.9rem);
+  font-size: clamp(1.22rem, 5.4vw, 1.7rem);
   color: var(--color-text-secondary);
   line-height: 1.35;
   white-space: normal;
@@ -97,7 +98,7 @@ body[data-locale='ar'] .folder-hero__title-sans {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-block-start: calc(var(--space-1) * -0.25);
+  margin-block-start: 0.35rem;
 }
 
 .folder-hero__explore {
@@ -106,7 +107,7 @@ body[data-locale='ar'] .folder-hero__title-sans {
   justify-content: center;
   gap: 0.35rem;
   margin: 0;
-  margin-block-start: calc(var(--space-1) * -0.35);
+  margin-block-start: 1.25rem;
   text-decoration: none;
 }
 
@@ -123,18 +124,20 @@ body[data-locale='ar'] .folder-hero__title-sans {
 
 .folder-hero__statement {
   margin: 0;
-  max-width: 46ch;
+  max-width: 44ch;
+  font-size: clamp(1.05rem, 1.2vw, 1.15rem);
   color: var(--color-text-secondary);
   line-height: 1.55;
+  text-wrap: balance;
 }
 
 .folder-hero__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-3);
+  gap: 0.75rem;
   justify-content: center;
-  width: min(100%, 28rem);
-  margin-block-start: calc(var(--space-1) * -0.35);
+  inline-size: auto;
+  margin-block-start: 0;
 }
 
 /* Folder scene */
@@ -153,23 +156,23 @@ body[data-locale='ar'] .folder-hero__title-sans {
   width: 100%;
   aspect-ratio: 640 / 420;
   isolation: isolate;
-  --folder-back-start: color-mix(in srgb, var(--color-surface) 72%, var(--color-accent) 28%);
-  --folder-back-end: color-mix(in srgb, var(--color-card) 88%, var(--color-accent) 12%);
-  --folder-front-start: color-mix(in srgb, var(--color-card) 62%, transparent);
-  --folder-front-end: color-mix(in srgb, var(--color-card) 78%, var(--color-accent) 22%);
+  --folder-back-start: color-mix(in srgb, var(--color-surface) 74%, var(--color-accent) 26%);
+  --folder-back-end: color-mix(in srgb, var(--color-card) 90%, var(--color-accent) 10%);
+  --folder-front-start: color-mix(in srgb, var(--color-card) 91%, var(--color-accent) 9%);
+  --folder-front-end: color-mix(in srgb, var(--color-card) 94%, var(--color-surface) 6%);
 }
 
 .folder-shell__glow {
   position: absolute;
-  inset: 12% 10% 14%;
+  inset: 18% 18% 20%;
   border-radius: 50%;
   background: radial-gradient(
-    circle at 50% 38%,
-    color-mix(in srgb, var(--color-glow-strong) 52%, transparent) 0%,
-    transparent 68%
+    circle at 50% 42%,
+    color-mix(in srgb, var(--color-glow-strong) 48%, transparent) 0%,
+    transparent 62%
   );
-  opacity: calc(0.32 + var(--folder-light, 0.16) * 0.35);
-  filter: blur(18px);
+  opacity: calc(0.26 + var(--folder-light, 0.16) * 0.28);
+  filter: blur(14px);
   pointer-events: none;
   z-index: 0;
   transition: opacity var(--motion-standard) var(--ease-out);
@@ -192,27 +195,25 @@ body[data-locale='ar'] .folder-hero__title-sans {
 }
 
 .folder-back-shape {
-  stroke: color-mix(in srgb, var(--color-accent-soft) 32%, var(--color-border));
-  stroke-width: 1.5;
-  vector-effect: non-scaling-stroke;
-}
-
-.folder-back-highlight {
-  stroke: color-mix(in srgb, var(--color-accent-cyan) 28%, transparent);
-  stroke-width: 1;
-  opacity: 0.55;
-}
-
-.folder-pocket-shape {
-  stroke: color-mix(in srgb, var(--color-accent-soft) 38%, var(--color-border));
+  stroke: color-mix(in srgb, var(--color-accent-soft) 18%, var(--color-border));
   stroke-width: 1.25;
   vector-effect: non-scaling-stroke;
 }
 
+.folder-back-highlight {
+  stroke: color-mix(in srgb, var(--color-accent-cyan) 16%, transparent);
+  stroke-width: 1;
+  opacity: 0.35;
+}
+
+.folder-pocket-shape {
+  stroke: none;
+}
+
 .folder-pocket-lip {
-  stroke: color-mix(in srgb, var(--color-accent-cyan) 62%, white 8%);
-  stroke-width: 2;
-  opacity: 0.9;
+  stroke: color-mix(in srgb, var(--color-accent-cyan) 42%, transparent);
+  stroke-width: 1.15;
+  opacity: 0.72;
 }
 
 .folder-pocket-reflection {
@@ -220,13 +221,14 @@ body[data-locale='ar'] .folder-hero__title-sans {
   opacity: 0.45;
 }
 
-.folder-shell[data-dragging='true'] .folder-pocket-shape {
-  stroke: color-mix(in srgb, var(--color-accent-cyan) 34%, var(--color-border));
+.folder-shell[data-dragging='true'] .folder-pocket-lip {
+  stroke: color-mix(in srgb, var(--color-accent-cyan) 52%, transparent);
+  opacity: 0.82;
 }
 
 .folder-stack {
   position: absolute;
-  inset-block: 6% 38%;
+  inset-block: 4% 42%;
   inset-inline: 8%;
   z-index: 2;
   display: grid;
@@ -235,21 +237,21 @@ body[data-locale='ar'] .folder-hero__title-sans {
 
 .folder-label {
   position: absolute;
-  inset-block-end: 8.5%;
-  inset-inline-start: 9%;
+  inset-block-end: 10%;
+  inset-inline-start: 10%;
   z-index: 5;
   margin: 0;
   color: var(--color-text-secondary);
-  letter-spacing: 0.06em;
-  font-size: 0.62rem;
-  opacity: 0.76;
+  letter-spacing: 0.045em;
+  font-size: 0.65rem;
+  opacity: 0.82;
   pointer-events: none;
 }
 
 [dir='rtl'] .folder-label,
 body[data-locale='ar'] .folder-label {
   inset-inline-start: auto;
-  inset-inline-end: 9%;
+  inset-inline-end: 10%;
   text-align: end;
 }
 
@@ -266,7 +268,8 @@ body[data-locale='ar'] .folder-label {
   border-radius: calc(var(--radius-md) + 0.05rem);
   pointer-events: none;
   overflow: hidden;
-  box-shadow: 0 5px 14px color-mix(in srgb, var(--color-glow) 16%, transparent);
+  opacity: 0.72;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-glow) 12%, transparent);
 }
 
 .folder-decorative-sheet--a {
@@ -370,9 +373,9 @@ body[data-locale='ar'] .folder-label {
   height: 100%;
   padding: 0.4rem;
   border-radius: calc(var(--radius-md) + 0.05rem);
-  background: color-mix(in srgb, var(--color-card) 95%, transparent);
-  border: 1px solid color-mix(in srgb, var(--fragment-accent) 28%, var(--color-border));
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--color-glow) 22%, transparent);
+  background: color-mix(in srgb, var(--color-card) 97%, transparent);
+  border: 1px solid color-mix(in srgb, var(--fragment-accent) 36%, var(--color-border));
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--color-glow) 24%, transparent);
   overflow: hidden;
   transition: box-shadow var(--motion-standard) var(--ease-out);
 }
@@ -392,11 +395,29 @@ body[data-locale='ar'] .folder-label {
 
 .folder-fragment__media {
   position: relative;
-  flex: 0 0 72%;
+  flex: 0 0 69%;
   min-height: 0;
   overflow: hidden;
   border-radius: calc(var(--radius-md) - 3px);
-  background: color-mix(in srgb, var(--fragment-accent) 8%, var(--color-surface));
+  background: color-mix(in srgb, var(--fragment-accent) 12%, var(--color-surface));
+}
+
+.folder-fragment__media::after {
+  content: '';
+  position: absolute;
+  inset-block-end: 0.4rem;
+  inset-inline-end: 0.4rem;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-accent-cyan) 72%, white 8%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--fragment-accent) 35%, transparent);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.folder-fragment[data-state='dragging'] .folder-fragment__media::after {
+  opacity: 0;
 }
 
 .folder-fragment__image {
@@ -457,9 +478,17 @@ body[data-locale='ar'] .folder-label {
   grid-template-columns: 1fr auto;
   align-items: end;
   gap: 0.12rem 0.35rem;
-  flex: 1 1 28%;
+  flex: 1 1 31%;
   padding: 0.4rem 0.12rem 0.08rem;
   text-align: start;
+}
+
+.folder-fragment:not([data-state='dragging']) .folder-fragment__sheet {
+  clip-path: inset(0 0 31% 0 round calc(var(--radius-md) + 0.05rem));
+}
+
+.folder-fragment[data-state='dragging'] .folder-fragment__sheet {
+  clip-path: none;
 }
 
 .folder-fragment__meta {
@@ -494,12 +523,12 @@ body[data-locale='ar'] .folder-label {
 [data-theme='light'] .folder-shell {
   --folder-back-start: color-mix(in srgb, var(--color-card) 88%, var(--color-accent) 12%);
   --folder-back-end: color-mix(in srgb, var(--color-surface) 92%, var(--color-accent) 8%);
-  --folder-front-start: color-mix(in srgb, var(--color-card) 78%, transparent);
-  --folder-front-end: color-mix(in srgb, var(--color-card) 92%, var(--color-accent) 8%);
+  --folder-front-start: color-mix(in srgb, var(--color-card) 94%, var(--color-accent) 6%);
+  --folder-front-end: color-mix(in srgb, var(--color-card) 97%, white 3%);
 }
 
 [data-theme='light'] .folder-back-shape {
-  stroke: color-mix(in srgb, var(--color-accent-soft) 24%, var(--color-border));
+  stroke: color-mix(in srgb, var(--color-accent-soft) 16%, var(--color-border));
 }
 
 [data-theme='light'] .folder-fragment__sheet {
@@ -546,33 +575,39 @@ body[data-locale='ar'] .folder-label {
 
 @media (max-width: 767px) {
   .folder-hero {
-    padding-block: clamp(1.5rem, 3.5vh, 2.5rem) clamp(2rem, 5vh, 3.5rem);
+    padding-block-start: clamp(1.25rem, 3vh, 2rem);
+    padding-block-end: clamp(2rem, 4.5vh, 2.75rem);
     overflow-x: clip;
   }
 
+  .folder-hero__explore {
+    margin-block-start: 1.5rem;
+  }
+
   .folder-hero__title-serif {
-    font-size: clamp(2.75rem, 12vw, 4rem);
+    font-size: clamp(2.65rem, 11vw, 3.6rem);
   }
 
   .folder-hero__title-sans {
-    font-size: clamp(1.3rem, 6vw, 1.9rem);
+    font-size: clamp(1.22rem, 5.4vw, 1.7rem);
   }
 
   .folder-hero__statement {
-    max-width: 34ch;
-    font-size: clamp(1.05rem, 4.2vw, 1.2rem);
+    max-width: 31ch;
+    font-size: clamp(1rem, 4vw, 1.1rem);
     line-height: 1.6;
   }
 
   .folder-hero__actions {
     flex-direction: column;
     align-items: center;
-    width: min(100%, 21rem);
+    inline-size: min(100%, 19rem);
     gap: 0.75rem;
   }
 
   .folder-hero__actions .btn {
     width: 100%;
+    min-height: 3rem;
   }
 
   .folder-decorative-sheet[data-sheet='0'] {
@@ -596,8 +631,8 @@ body[data-locale='ar'] .folder-label {
   }
 
   .folder-shell__glow {
-    opacity: 0.32;
-    filter: blur(14px);
+    opacity: 0.26;
+    filter: blur(12px);
   }
 
   .folder-hero__explore:hover .folder-hero__explore-arrow,

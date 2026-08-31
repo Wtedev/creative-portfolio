@@ -29,21 +29,14 @@ export function ThemeToggle() {
   };
 
   const label = theme === 'light' ? t('light') : theme === 'dark' ? t('dark') : t('system');
-  const icon = resolvedTheme === 'dark' ? '◐' : '◑';
-
-  if (!mounted) {
-    return (
-      <button type="button" className="theme-toggle" aria-label={t('label')} disabled>
-        …
-      </button>
-    );
-  }
+  const icon = mounted && resolvedTheme === 'dark' ? '◐' : '◑';
 
   return (
     <button
       type="button"
       className="theme-toggle"
       onClick={cycleTheme}
+      disabled={!mounted}
       aria-label={`${t('label')}: ${label}`}
       title={`${t('label')}: ${label}`}
     >
