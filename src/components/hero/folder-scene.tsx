@@ -97,6 +97,7 @@ export function FolderScene({ content }: FolderSceneProps) {
 
   const dragEnabled = !reducedMotion && finePointer && !narrow;
   const stackScale = narrow ? 0.88 : 1;
+  const rotationScale = narrow ? 0.6 : 1;
 
   const handleDragStart = useCallback((id: string) => {
     setActiveDragId(id);
@@ -149,7 +150,12 @@ export function FolderScene({ content }: FolderSceneProps) {
       </p>
       <FolderShell label={t('selectedWorks')} dragging={Boolean(activeDragId)}>
         {decorativeSheets.map((sheet) => (
-          <DecorativeFolderSheet key={sheet.id} sheet={sheet} scale={stackScale} />
+          <DecorativeFolderSheet
+            key={sheet.id}
+            sheet={sheet}
+            scale={stackScale}
+            rotationScale={rotationScale}
+          />
         ))}
         {projects.map((fragment, projectIndex) => {
           const entry = runtime[fragment.id] ?? { state: 'stacked' as const };
@@ -157,7 +163,7 @@ export function FolderScene({ content }: FolderSceneProps) {
           const scaledSlot = {
             x: slot.x * stackScale,
             y: slot.y * stackScale,
-            rotate: slot.rotate * (narrow ? 0.7 : 1),
+            rotate: slot.rotate * rotationScale,
             z: slot.z,
           };
 

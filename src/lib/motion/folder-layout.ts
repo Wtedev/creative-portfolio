@@ -22,21 +22,27 @@ export type FolderStackSlot = {
   z: number;
 };
 
-/** Decorative sheet fan — behind project cards. */
-const DECORATIVE_SLOTS: readonly FolderStackSlot[] = [
-  { x: -46, y: 22, rotate: -4, z: 2 },
-  { x: -6, y: 10, rotate: -1, z: 2 },
-] as const;
+const DECORATIVE_LEFT: FolderStackSlot = { x: -52, y: 12, rotate: -5, z: 2 };
+const DECORATIVE_RIGHT: FolderStackSlot = { x: 52, y: 12, rotate: 5, z: 2 };
 
-/** Project card fan when multiple projects fill the folder. */
-const PROJECT_FAN: readonly FolderStackSlot[] = [
-  { x: -46, y: 22, rotate: -4, z: 3 },
-  { x: -12, y: 14, rotate: -2, z: 3 },
-  { x: 36, y: 18, rotate: 4, z: 3 },
-  { x: 42, y: 16, rotate: 5, z: 3 },
-] as const;
-
-const SINGLE_PROJECT_SLOT: FolderStackSlot = { x: 42, y: 16, rotate: 4, z: 3 };
+const PROJECT_SLOTS: Record<number, readonly FolderStackSlot[]> = {
+  1: [{ x: 0, y: 28, rotate: 0, z: 3 }],
+  2: [
+    { x: -28, y: 0, rotate: -3, z: 3 },
+    { x: 28, y: 0, rotate: 3, z: 3 },
+  ],
+  3: [
+    { x: -46, y: 10, rotate: -5, z: 3 },
+    { x: 0, y: -8, rotate: 0, z: 3 },
+    { x: 46, y: 10, rotate: 5, z: 3 },
+  ],
+  4: [
+    { x: -62, y: 16, rotate: -6, z: 3 },
+    { x: -22, y: -2, rotate: -2, z: 3 },
+    { x: 22, y: -2, rotate: 2, z: 3 },
+    { x: 62, y: 16, rotate: 6, z: 3 },
+  ],
+};
 
 export const MAX_HERO_FRAGMENTS = 4;
 export const MAX_DECORATIVE_SHEETS = 2;
@@ -71,22 +77,20 @@ export const FOLDER_Z = {
 } as const;
 
 export function getDecorativeSlot(index: number): FolderStackSlot {
-  return DECORATIVE_SLOTS[index % DECORATIVE_SLOTS.length]!;
+  return index === 0 ? DECORATIVE_LEFT : DECORATIVE_RIGHT;
 }
 
 export function getProjectSlot(projectIndex: number, totalProjects: number): FolderStackSlot {
-  if (totalProjects === 1) {
-    return SINGLE_PROJECT_SLOT;
-  }
-  return PROJECT_FAN[projectIndex % PROJECT_FAN.length]!;
+  const slots = PROJECT_SLOTS[totalProjects] ?? PROJECT_SLOTS[1]!;
+  return slots[projectIndex % slots.length]!;
 }
 
 /** @deprecated Prefer getDecorativeSlot / getProjectSlot */
 export function getStackSlot(index: number): FolderStackSlot {
-  if (index < DECORATIVE_SLOTS.length) {
+  if (index < MAX_DECORATIVE_SHEETS) {
     return getDecorativeSlot(index);
   }
-  return getProjectSlot(index - DECORATIVE_SLOTS.length, 1);
+  return getProjectSlot(index - MAX_DECORATIVE_SHEETS, 1);
 }
 
 export function clampToBounds(

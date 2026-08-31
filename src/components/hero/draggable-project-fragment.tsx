@@ -42,7 +42,7 @@ export function DraggableProjectFragment({
 
   const style = {
     ['--fragment-accent' as string]: fragment.accentColor ?? 'var(--color-accent)',
-    zIndex: state === 'dragging' ? FOLDER_Z.dragging : FOLDER_Z.card,
+    zIndex: state === 'dragging' || state === 'returning' ? FOLDER_Z.dragging : FOLDER_Z.card,
   } as CSSProperties;
 
   const handlePointerDown = (event: ReactPointerEvent) => {

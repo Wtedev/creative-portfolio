@@ -36,13 +36,20 @@ describe('drag intent', () => {
 
 describe('folder layout helpers', () => {
   it('returns deterministic decorative slots', () => {
-    expect(getDecorativeSlot(0)).toEqual({ x: -46, y: 22, rotate: -4, z: 2 });
+    expect(getDecorativeSlot(0)).toEqual({ x: -52, y: 12, rotate: -5, z: 2 });
+    expect(getDecorativeSlot(1)).toEqual({ x: 52, y: 12, rotate: 5, z: 2 });
     expect(getDecorativeSlot(0)).toEqual(getDecorativeSlot(0));
     expect(getDecorativeSlot(0).rotate).not.toBe(getDecorativeSlot(1).rotate);
   });
 
-  it('returns a forward project slot for a single project', () => {
-    expect(getProjectSlot(0, 1)).toEqual({ x: 42, y: 16, rotate: 4, z: 3 });
+  it('returns a centered project slot for a single project', () => {
+    expect(getProjectSlot(0, 1)).toEqual({ x: 0, y: 28, rotate: 0, z: 3 });
+  });
+
+  it('returns balanced multi-project fan slots', () => {
+    expect(getProjectSlot(0, 2)).toEqual({ x: -28, y: 0, rotate: -3, z: 3 });
+    expect(getProjectSlot(1, 2)).toEqual({ x: 28, y: 0, rotate: 3, z: 3 });
+    expect(getProjectSlot(1, 3)).toEqual({ x: 0, y: -8, rotate: 0, z: 3 });
   });
 
   it('maps legacy stack indices to decorative and project slots', () => {

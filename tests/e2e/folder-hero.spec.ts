@@ -109,13 +109,15 @@ test.describe('Interactive folder hero', () => {
     await expect(fragment).toHaveAttribute('data-state', 'stacked', { timeout: 3000 });
     await expect(fragment).not.toHaveAttribute('data-state', 'inspecting');
 
-    const stackedClipped = await page.evaluate(() => {
+    const stackedClipPath = await page.evaluate(() => {
       const sheet = document.querySelector(
         '[data-testid="folder-fragment-2"] .folder-fragment__sheet',
       ) as HTMLElement | null;
-      return sheet ? getComputedStyle(sheet).clipPath.includes('inset') : false;
+      if (!sheet) return null;
+      const clipPath = getComputedStyle(sheet).clipPath;
+      return clipPath === 'none' || clipPath === '';
     });
-    expect(stackedClipped).toBe(true);
+    expect(stackedClipPath).toBe(true);
   });
 
   test('title and folder do not overlap on desktop', async ({ page }) => {
@@ -160,7 +162,9 @@ test.describe('Interactive folder hero', () => {
     await expect(page.getByTestId('folder-shell')).toBeInViewport();
   });
 
-  test('stacked card body stays hidden behind opaque pocket', async ({ page }) => {
+  test('stacked card body stays hidden behind opaque pocket without clip-path', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/en');
     const metrics = await page.evaluate(() => {
@@ -172,14 +176,78 @@ test.describe('Interactive folder hero', () => {
       const shell = document.querySelector('[data-testid="folder-shell"]');
       const shellBox = shell?.getBoundingClientRect();
       const pocketTop = shellBox ? shellBox.top + shellBox.height * (232 / 420) : cardBox.bottom;
+      const hiddenHeight = Math.max(0, cardBox.bottom - pocketTop);
+      const hiddenRatio = hiddenHeight / cardBox.height;
+      const clipPath = sheetStyles.clipPath;
       return {
-        bodyClipped: sheetStyles.clipPath.includes('inset'),
+        usesClipPath: clipPath !== 'none' && clipPath !== '',
         cardMediaVisible: cardBox.top < pocketTop - 8,
+        hiddenRatio,
       };
     });
     expect(metrics).toBeTruthy();
-    expect(metrics?.bodyClipped).toBe(true);
+    expect(metrics?.usesClipPath).toBe(false);
     expect(metrics?.cardMediaVisible).toBe(true);
+    expect(metrics?.hiddenRatio).toBeGreaterThanOrEqual(0.28);
+    expect(metrics?.hiddenRatio).toBeLessThanOrEqual(0.34);
+  });
+
+  test('real and decorative cards share one silhouette', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/en');
+    const metrics = await page.evaluate(() => {
+      const real = document.querySelector('[data-testid="folder-fragment-2"]');
+      const left = document.querySelector('[data-testid="folder-decorative-0"]');
+      const right = document.querySelector('[data-testid="folder-decorative-1"]');
+      if (!real || !left || !right) return null;
+
+      const realSheet = real.querySelector('.folder-fragment__sheet') as HTMLElement | null;
+      const leftCard = left.querySelector('.folder-card') as HTMLElement | null;
+      const rightCard = right.querySelector('.folder-card') as HTMLElement | null;
+      const media = real.querySelector('.folder-fragment__media') as HTMLElement | null;
+      const mediaAfterContent = media ? getComputedStyle(media, '::after').content : 'none';
+
+      const realBox = (realSheet ?? real).getBoundingClientRect();
+      const leftBox = (leftCard ?? left).getBoundingClientRect();
+      const rightBox = (rightCard ?? right).getBoundingClientRect();
+      const realWidth = (realSheet ?? real).clientWidth;
+      const leftWidth = (leftCard ?? left).clientWidth;
+      const rightWidth = (rightCard ?? right).clientWidth;
+      const realHeight = (realSheet ?? real).clientHeight;
+      const leftHeight = (leftCard ?? left).clientHeight;
+      const rightHeight = (rightCard ?? right).clientHeight;
+
+      return {
+        widthDelta: Math.max(Math.abs(realWidth - leftWidth), Math.abs(realWidth - rightWidth)),
+        heightDelta: Math.max(
+          Math.abs(realHeight - leftHeight),
+          Math.abs(realHeight - rightHeight),
+        ),
+        realRadius: realSheet ? getComputedStyle(realSheet).borderRadius : '',
+        leftRadius: getComputedStyle(leftCard ?? left).borderRadius,
+        realCenterOffset: realBox.left + realBox.width / 2,
+        shellCenter:
+          (document.querySelector('[data-testid="folder-shell"]')!.getBoundingClientRect().left +
+            document.querySelector('[data-testid="folder-shell"]')!.getBoundingClientRect().right) /
+          2,
+        leftOffset: leftBox.left + leftBox.width / 2,
+        rightOffset: rightBox.left + rightBox.width / 2,
+        hasCyanStatusDot:
+          mediaAfterContent !== 'none' &&
+          mediaAfterContent !== 'normal' &&
+          mediaAfterContent !== '""',
+      };
+    });
+    expect(metrics).toBeTruthy();
+    expect(metrics?.widthDelta).toBeLessThanOrEqual(2);
+    expect(metrics?.heightDelta).toBeLessThanOrEqual(2);
+    expect(metrics?.realRadius).toBe(metrics?.leftRadius);
+    expect(
+      Math.abs((metrics?.realCenterOffset ?? 0) - (metrics?.shellCenter ?? 0)),
+    ).toBeLessThanOrEqual(6);
+    expect(Math.abs((metrics?.leftOffset ?? 0) - (metrics?.shellCenter ?? 0))).toBeGreaterThan(20);
+    expect(Math.abs((metrics?.rightOffset ?? 0) - (metrics?.shellCenter ?? 0))).toBeGreaterThan(20);
+    expect(metrics?.hasCyanStatusDot).toBe(false);
   });
 
   test('cards sit inside folder width and intersect the pocket region', async ({ page }) => {

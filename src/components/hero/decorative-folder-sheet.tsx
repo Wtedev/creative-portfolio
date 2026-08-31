@@ -6,17 +6,22 @@ import { FOLDER_Z, getDecorativeSlot } from '@/lib/motion/folder-layout';
 type DecorativeFolderSheetProps = {
   sheet: HeroDecorativeSheet;
   scale?: number;
+  rotationScale?: number;
 };
 
-export function DecorativeFolderSheet({ sheet, scale = 1 }: DecorativeFolderSheetProps) {
+export function DecorativeFolderSheet({
+  sheet,
+  scale = 1,
+  rotationScale = 1,
+}: DecorativeFolderSheetProps) {
   const slot = getDecorativeSlot(sheet.index);
   const variantClass =
-    sheet.index % 2 === 0 ? 'folder-decorative-sheet--a' : 'folder-decorative-sheet--b';
+    sheet.index === 0 ? 'folder-decorative-sheet--violet' : 'folder-decorative-sheet--cyan';
 
   const style = {
     ['--fragment-accent' as string]: sheet.accentColor,
     zIndex: FOLDER_Z.decorative,
-    transform: `translate(${slot.x * scale}px, ${slot.y * scale}px) rotate(${slot.rotate * (scale < 1 ? 0.65 : 1)}deg)`,
+    transform: `translate(${slot.x * scale}px, ${slot.y * scale}px) rotate(${slot.rotate * rotationScale}deg)`,
   } as CSSProperties;
 
   return (
@@ -27,8 +32,17 @@ export function DecorativeFolderSheet({ sheet, scale = 1 }: DecorativeFolderShee
       aria-hidden="true"
       data-testid={`folder-decorative-${sheet.index}`}
     >
-      {sheet.index % 2 === 0 ? <span className="folder-decorative-sheet__line" /> : null}
-      <span className="folder-decorative-sheet__mark" />
+      <div className="folder-card">
+        <div className="folder-card__visual">
+          <span className="folder-card__grid" />
+          <span className="folder-card__frame" />
+          <span className="folder-card__line" />
+        </div>
+        <div className="folder-card__footer">
+          <span className="folder-card__dot" />
+          <span className="folder-card__rule" />
+        </div>
+      </div>
     </div>
   );
 }

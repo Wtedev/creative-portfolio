@@ -160,6 +160,10 @@ body[data-locale='ar'] .folder-hero__title-sans {
   --folder-back-end: color-mix(in srgb, var(--color-card) 90%, var(--color-accent) 10%);
   --folder-front-start: color-mix(in srgb, var(--color-card) 91%, var(--color-accent) 9%);
   --folder-front-end: color-mix(in srgb, var(--color-card) 94%, var(--color-surface) 6%);
+  --folder-card-width: clamp(8.5rem, 30%, 10.25rem);
+  --folder-card-radius: 0.9rem;
+  --folder-card-border: color-mix(in srgb, var(--color-accent-soft) 26%, var(--color-border));
+  --folder-card-shadow: 0 10px 24px color-mix(in srgb, var(--color-glow) 20%, transparent);
 }
 
 .folder-shell__glow {
@@ -228,7 +232,7 @@ body[data-locale='ar'] .folder-hero__title-sans {
 
 .folder-stack {
   position: absolute;
-  inset-block: 4% 42%;
+  inset-block: 4% 34%;
   inset-inline: 8%;
   z-index: 2;
   display: grid;
@@ -255,93 +259,142 @@ body[data-locale='ar'] .folder-label {
   text-align: end;
 }
 
-/* Cards */
+/* Cards — unified folder card system */
 
 .folder-decorative-sheet,
 .folder-fragment {
   position: absolute;
-  inline-size: clamp(7.75rem, 29%, 10.5rem);
+  inline-size: var(--folder-card-width);
   aspect-ratio: 4 / 5;
 }
 
-.folder-decorative-sheet {
-  border-radius: calc(var(--radius-md) + 0.05rem);
-  pointer-events: none;
+.folder-card,
+.folder-fragment__sheet {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 0.4rem;
+  border-radius: var(--folder-card-radius);
+  background: color-mix(in srgb, var(--color-card) 96%, transparent);
+  border: 1px solid var(--folder-card-border);
+  box-shadow: var(--folder-card-shadow);
   overflow: hidden;
-  opacity: 0.72;
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-glow) 12%, transparent);
 }
 
-.folder-decorative-sheet--a {
+.folder-decorative-sheet {
+  pointer-events: none;
+}
+
+.folder-decorative-sheet .folder-card {
+  height: 100%;
+  opacity: 0.88;
+}
+
+.folder-decorative-sheet--violet {
+  --fragment-accent: #9a6cff;
+}
+
+.folder-decorative-sheet--cyan {
+  --fragment-accent: #58d6f7;
+}
+
+.folder-card__visual,
+.folder-fragment__media {
+  position: relative;
+  flex: 0 0 69%;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: calc(var(--folder-card-radius) - 0.2rem);
   background:
-    linear-gradient(
-      145deg,
-      color-mix(in srgb, var(--fragment-accent) 24%, var(--color-surface)),
-      color-mix(in srgb, var(--color-card) 90%, transparent)
+    radial-gradient(
+      circle at 28% 22%,
+      color-mix(in srgb, var(--fragment-accent, var(--color-accent)) 22%, transparent),
+      transparent 58%
     ),
+    linear-gradient(
+      165deg,
+      color-mix(in srgb, var(--color-surface) 84%, var(--fragment-accent, var(--color-accent)) 16%),
+      color-mix(in srgb, var(--color-card) 92%, transparent)
+    );
+}
+
+.folder-card__grid {
+  position: absolute;
+  inset: 0;
+  background:
     repeating-linear-gradient(
       0deg,
-      color-mix(in srgb, var(--fragment-accent) 8%, transparent) 0 1px,
-      transparent 1px 0.7rem
+      color-mix(in srgb, var(--fragment-accent, var(--color-accent)) 8%, transparent) 0 1px,
+      transparent 1px 0.65rem
     ),
     repeating-linear-gradient(
       90deg,
-      color-mix(in srgb, var(--fragment-accent) 8%, transparent) 0 1px,
-      transparent 1px 0.7rem
+      color-mix(in srgb, var(--fragment-accent, var(--color-accent)) 8%, transparent) 0 1px,
+      transparent 1px 0.65rem
     );
-  border: 1px solid color-mix(in srgb, var(--fragment-accent) 22%, var(--color-border));
+  opacity: 0.42;
 }
 
-.folder-decorative-sheet--a::after {
-  content: '';
+.folder-card__frame {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(128deg, color-mix(in srgb, white 12%, transparent), transparent 42%);
-  opacity: 0.35;
+  inset: 14% 16% 24%;
+  border: 1px solid color-mix(in srgb, var(--fragment-accent, var(--color-accent)) 28%, transparent);
+  border-radius: calc(var(--folder-card-radius) - 0.35rem);
 }
 
-.folder-decorative-sheet--b {
-  background:
-    radial-gradient(
-      circle at 78% 22%,
-      color-mix(in srgb, var(--fragment-accent) 18%, transparent),
-      transparent 52%
-    ),
-    linear-gradient(
-      168deg,
-      color-mix(in srgb, var(--color-accent-cyan) 12%, var(--color-card)),
-      color-mix(in srgb, var(--fragment-accent) 16%, var(--color-surface))
-    );
-  border: 1px solid color-mix(in srgb, var(--color-accent-cyan) 18%, var(--color-border));
-}
-
-.folder-decorative-sheet--b::before {
-  content: '';
+.folder-card__line {
   position: absolute;
-  inset: 14% 18%;
-  border: 1px solid color-mix(in srgb, var(--fragment-accent) 28%, transparent);
-  border-radius: calc(var(--radius-sm) - 1px);
-}
-
-.folder-decorative-sheet__mark {
-  position: absolute;
-  inset-block-end: 0.45rem;
-  inset-inline-end: 0.55rem;
-  width: 0.42rem;
-  height: 0.42rem;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--fragment-accent) 55%, var(--color-text-secondary));
+  inset-block-start: 22%;
+  inset-inline-start: 18%;
+  width: 40%;
+  height: 1px;
+  background: color-mix(in srgb, var(--color-accent-cyan) 42%, transparent);
   opacity: 0.55;
 }
 
-.folder-decorative-sheet__line {
-  position: absolute;
-  inset-block-start: 18%;
-  inset-inline-start: 14%;
-  width: 38%;
-  height: 1px;
-  background: color-mix(in srgb, var(--color-accent-cyan) 45%, transparent);
-  opacity: 0.5;
+.folder-decorative-sheet--cyan .folder-card__grid {
+  opacity: 0.34;
+}
+
+.folder-decorative-sheet--cyan .folder-card__frame {
+  inset: 18% 20% 28%;
+}
+
+.folder-card__footer,
+.folder-fragment__body {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 0.12rem 0.35rem;
+  flex: 1 1 31%;
+  padding: 0.38rem 0.12rem 0.06rem;
+  text-align: start;
+}
+
+.folder-card__footer {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.35rem;
+  padding-inline: 0.15rem;
+}
+
+.folder-card__dot {
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--fragment-accent, var(--color-accent)) 45%, transparent);
+  opacity: 0.45;
+}
+
+.folder-card__rule {
+  block-size: 1px;
+  background: color-mix(
+    in srgb,
+    var(--fragment-accent, var(--color-accent)) 24%,
+    var(--color-border)
+  );
+  opacity: 0.55;
 }
 
 .folder-fragment {
@@ -356,10 +409,11 @@ body[data-locale='ar'] .folder-label {
 
 .folder-fragment__link {
   display: block;
+  width: 100%;
   height: 100%;
   color: inherit;
   text-decoration: none;
-  border-radius: calc(var(--radius-md) + 0.05rem);
+  border-radius: var(--folder-card-radius);
 }
 
 .folder-fragment__link:focus-visible {
@@ -368,56 +422,22 @@ body[data-locale='ar'] .folder-label {
 }
 
 .folder-fragment__sheet {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 0.4rem;
-  border-radius: calc(var(--radius-md) + 0.05rem);
-  background: color-mix(in srgb, var(--color-card) 97%, transparent);
-  border: 1px solid color-mix(in srgb, var(--fragment-accent) 36%, var(--color-border));
-  box-shadow: 0 8px 20px color-mix(in srgb, var(--color-glow) 24%, transparent);
-  overflow: hidden;
+  border-color: color-mix(in srgb, var(--fragment-accent) 34%, var(--color-border));
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--color-glow) 24%, transparent);
   transition: box-shadow var(--motion-standard) var(--ease-out);
 }
 
 .folder-fragment[data-state='dragging'] .folder-fragment__sheet {
   box-shadow:
-    0 14px 28px color-mix(in srgb, var(--fragment-accent) 22%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--fragment-accent) 38%, transparent);
+    0 16px 32px color-mix(in srgb, var(--fragment-accent) 20%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--fragment-accent) 34%, transparent);
 }
 
 .folder-fragment__link:hover .folder-fragment__sheet,
 .folder-fragment__link:focus-visible .folder-fragment__sheet {
   box-shadow:
-    0 8px 22px color-mix(in srgb, var(--fragment-accent) 16%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--fragment-accent) 32%, transparent);
-}
-
-.folder-fragment__media {
-  position: relative;
-  flex: 0 0 69%;
-  min-height: 0;
-  overflow: hidden;
-  border-radius: calc(var(--radius-md) - 3px);
-  background: color-mix(in srgb, var(--fragment-accent) 12%, var(--color-surface));
-}
-
-.folder-fragment__media::after {
-  content: '';
-  position: absolute;
-  inset-block-end: 0.4rem;
-  inset-inline-end: 0.4rem;
-  width: 0.42rem;
-  height: 0.42rem;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--color-accent-cyan) 72%, white 8%);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--fragment-accent) 35%, transparent);
-  opacity: 0.85;
-  pointer-events: none;
-}
-
-.folder-fragment[data-state='dragging'] .folder-fragment__media::after {
-  opacity: 0;
+    0 12px 26px color-mix(in srgb, var(--fragment-accent) 14%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--fragment-accent) 30%, transparent);
 }
 
 .folder-fragment__image {
@@ -428,39 +448,38 @@ body[data-locale='ar'] .folder-label {
 }
 
 .folder-fragment__fallback {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 0;
   display: block;
   background:
     radial-gradient(
-      circle at 32% 24%,
-      color-mix(in srgb, var(--fragment-accent) 32%, transparent),
+      circle at 30% 22%,
+      color-mix(in srgb, var(--fragment-accent) 28%, transparent),
       transparent 58%
     ),
     repeating-linear-gradient(
       0deg,
-      color-mix(in srgb, var(--color-border) 28%, transparent) 0 1px,
+      color-mix(in srgb, var(--color-border) 26%, transparent) 0 1px,
       transparent 1px 0.65rem
     ),
     repeating-linear-gradient(
       90deg,
-      color-mix(in srgb, var(--color-border) 28%, transparent) 0 1px,
+      color-mix(in srgb, var(--color-border) 26%, transparent) 0 1px,
       transparent 1px 0.65rem
     ),
     linear-gradient(
       165deg,
-      color-mix(in srgb, var(--color-surface) 82%, var(--color-accent) 18%),
-      color-mix(in srgb, var(--color-card) 92%, transparent)
+      color-mix(in srgb, var(--color-surface) 84%, var(--fragment-accent) 16%),
+      color-mix(in srgb, var(--color-card) 94%, transparent)
     );
 }
 
 .folder-fragment__fallback::before {
   content: '';
   position: absolute;
-  inset: 16% 14% 28%;
-  border: 1px solid color-mix(in srgb, var(--color-accent-cyan) 42%, transparent);
-  border-radius: calc(var(--radius-sm) - 1px);
+  inset: 14% 16% 24%;
+  border: 1px solid color-mix(in srgb, var(--color-accent-cyan) 36%, transparent);
+  border-radius: calc(var(--folder-card-radius) - 0.35rem);
 }
 
 .folder-fragment__fallback::after {
@@ -468,27 +487,9 @@ body[data-locale='ar'] .folder-label {
   position: absolute;
   inset-block-start: 22%;
   inset-inline-start: 18%;
-  width: 42%;
+  width: 40%;
   height: 1px;
-  background: color-mix(in srgb, var(--color-accent-cyan) 55%, transparent);
-}
-
-.folder-fragment__body {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: end;
-  gap: 0.12rem 0.35rem;
-  flex: 1 1 31%;
-  padding: 0.4rem 0.12rem 0.08rem;
-  text-align: start;
-}
-
-.folder-fragment:not([data-state='dragging']) .folder-fragment__sheet {
-  clip-path: inset(0 0 31% 0 round calc(var(--radius-md) + 0.05rem));
-}
-
-.folder-fragment[data-state='dragging'] .folder-fragment__sheet {
-  clip-path: none;
+  background: color-mix(in srgb, var(--color-accent-cyan) 48%, transparent);
 }
 
 .folder-fragment__meta {
@@ -535,18 +536,8 @@ body[data-locale='ar'] .folder-label {
   background: color-mix(in srgb, var(--color-card) 97%, white 3%);
 }
 
-[data-theme='light'] .folder-decorative-sheet--a {
-  background:
-    linear-gradient(
-      145deg,
-      color-mix(in srgb, var(--fragment-accent) 12%, var(--color-card)),
-      color-mix(in srgb, var(--color-card) 96%, white 4%)
-    ),
-    repeating-linear-gradient(
-      0deg,
-      color-mix(in srgb, var(--color-border) 40%, transparent) 0 1px,
-      transparent 1px 0.7rem
-    );
+[data-theme='light'] .folder-decorative-sheet .folder-card {
+  opacity: 0.92;
 }
 
 @media (min-width: 480px) and (max-width: 767px) {
@@ -609,19 +600,15 @@ body[data-locale='ar'] .folder-label {
     width: 100%;
     min-height: 3rem;
   }
-
-  .folder-decorative-sheet[data-sheet='0'] {
-    display: none;
-  }
-
-  .folder-scene[data-narrow='true'] .folder-decorative-sheet[data-sheet='0'] {
-    display: none;
-  }
 }
 
 @media (max-width: 479px) {
   .folder-scene {
     inline-size: min(calc(100vw - 40px), 21rem);
+  }
+
+  .folder-decorative-sheet[data-sheet='0'] {
+    display: none;
   }
 }
 
