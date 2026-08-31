@@ -61,6 +61,8 @@
 
   --font-en: var(--font-manrope), 'Segoe UI', system-ui, sans-serif;
   --font-ar: var(--font-ibm-plex-arabic), 'Segoe UI', 'Tahoma', sans-serif;
+  --font-display-serif:
+    var(--font-fraunces), 'Iowan Old Style', 'Palatino Linotype', Palatino, serif;
 
   --theme-transition:
     color 240ms var(--ease-out), background-color 240ms var(--ease-out),

@@ -64,7 +64,7 @@ export default async function HomePage({ params }: HomePageProps) {
       <StructuredData data={personJsonLd} />
       <StructuredData data={websiteJsonLd} />
       <main id="main-content">
-        <HeroSection settings={content.siteSettings} />
+        <HeroSection settings={content.siteSettings} projects={content.projects} />
         <SelectedWorkSection projects={content.projects} />
         <CapabilitiesSection capabilities={content.capabilities} />
         <ToolsSection tools={content.tools} />

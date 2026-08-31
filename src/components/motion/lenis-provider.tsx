@@ -52,6 +52,9 @@ export function LenisProvider({ children }: LenisProviderProps) {
       if (!(element instanceof HTMLElement)) return;
       event.preventDefault();
       lenis.scrollTo(element, { offset: -80 });
+      if (hash !== window.location.hash) {
+        history.pushState(null, '', hash);
+      }
     };
 
     document.addEventListener('visibilitychange', onVisibilityChange);

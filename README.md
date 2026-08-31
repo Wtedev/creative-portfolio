@@ -100,6 +100,8 @@ docs/                   # Product and implementation documentation
 - [x] Phase 4 — Case studies, motion, Lenis scroll
 - [x] Phase 5 — Bilingual and responsive polish
 - [x] Phase 6 — QA, performance, launch readiness
+- [x] Phase 7 — Interactive glass folder hero
 
 See `docs/02-implementation-plan.md` for the full roadmap.
 See `docs/13-phase06-production-readiness.md` for the launch checklist.
+See `docs/14-phase07-interactive-folder-hero.md` for the Hero interaction.

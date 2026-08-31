@@ -1,0 +1,431 @@
+/* Interactive Luminous Glass Folder Hero */
+
+.folder-hero {
+  position: relative;
+  min-height: clamp(36rem, 96svh, 58rem);
+  display: flex;
+  align-items: center;
+  padding-block: var(--space-6) var(--space-7);
+  scroll-margin-top: 0;
+}
+
+.folder-hero__grid {
+  display: grid;
+  gap: var(--space-4);
+  width: 100%;
+  justify-items: center;
+  text-align: center;
+}
+
+.folder-hero__title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15em;
+  margin: 0;
+  max-width: min(18ch, 100%);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  z-index: 2;
+  position: relative;
+}
+
+.folder-hero__title-serif {
+  font-family: var(--font-display-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(2.4rem, 6vw + 0.5rem, 4.75rem);
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+.folder-hero__title-sans {
+  font-family: var(--font-en);
+  font-style: normal;
+  font-weight: 500;
+  font-size: clamp(1.35rem, 2.4vw + 0.6rem, 2.15rem);
+  letter-spacing: -0.02em;
+  color: color-mix(in srgb, var(--color-text) 78%, var(--color-accent-soft));
+}
+
+.folder-hero__amp {
+  font-weight: 400;
+  color: var(--color-accent-cyan);
+}
+
+body[data-locale='ar'] .folder-hero__title {
+  max-width: min(16ch, 100%);
+  letter-spacing: 0;
+}
+
+body[data-locale='ar'] .folder-hero__title-serif {
+  font-family: var(--font-ar);
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+body[data-locale='ar'] .folder-hero__title-sans {
+  font-family: var(--font-ar);
+  font-weight: 500;
+  font-size: clamp(1.2rem, 2vw + 0.55rem, 1.75rem);
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+}
+
+.folder-hero__copy {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: center;
+  max-width: 40rem;
+}
+
+.folder-hero__statement {
+  margin: 0;
+  max-width: 38ch;
+  color: var(--color-text-secondary);
+}
+
+.folder-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+}
+
+.folder-hero__explore {
+  margin-block-start: var(--space-1);
+}
+
+.folder-scene {
+  position: relative;
+  width: min(100%, 42rem);
+  display: grid;
+  gap: var(--space-3);
+  justify-items: center;
+  isolation: isolate;
+  --folder-light: 0.22;
+}
+
+.folder-scene__instruction {
+  margin: 0;
+  max-width: 36ch;
+  color: var(--color-text-secondary);
+}
+
+.folder-shell {
+  position: relative;
+  inline-size: min(100%, 38rem);
+  aspect-ratio: 1.15;
+  isolation: isolate;
+}
+
+.folder-shell__glow {
+  position: absolute;
+  inset: 8% 12% 18%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-glow-strong) 85%, transparent) 0%,
+    transparent 72%
+  );
+  opacity: calc(0.7 + var(--folder-light, 0.22));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.folder-back {
+  position: absolute;
+  inset: 10% 5% 12%;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--color-surface) 70%, var(--color-accent) 30%) 0%,
+    color-mix(in srgb, var(--color-card) 88%, transparent) 100%
+  );
+  border: 1px solid var(--color-border);
+  box-shadow: 0 24px 60px color-mix(in srgb, var(--color-glow) 45%, transparent);
+  clip-path: polygon(0 16%, 26% 16%, 32% 0, 62% 0, 68% 16%, 100% 16%, 100% 100%, 0 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.folder-back__tab {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 30%;
+  inline-size: 34%;
+  block-size: 16%;
+}
+
+.folder-stack {
+  position: absolute;
+  inset: 2% 8% 36%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+}
+
+.folder-front {
+  position: absolute;
+  inset-inline: 3%;
+  inset-block-end: 6%;
+  block-size: 48%;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-card) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent-soft) 45%, var(--color-border));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--color-accent-cyan) 28%, transparent),
+    0 18px 40px color-mix(in srgb, var(--color-glow) 35%, transparent);
+  backdrop-filter: blur(16px) saturate(125%);
+  -webkit-backdrop-filter: blur(16px) saturate(125%);
+  z-index: 3;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .folder-front {
+    background: color-mix(in srgb, var(--color-card) 88%, var(--color-accent) 12%);
+  }
+}
+
+.folder-front__sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    125deg,
+    color-mix(in srgb, var(--color-accent-soft) 18%, transparent),
+    transparent 45%,
+    color-mix(in srgb, var(--color-accent-cyan) 12%, transparent)
+  );
+  opacity: 0.85;
+}
+
+.folder-front__reflection {
+  position: absolute;
+  inset-inline: 12%;
+  inset-block-end: 10%;
+  block-size: 28%;
+  border-radius: 999px;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--color-accent-cyan) 22%, transparent),
+    transparent 70%
+  );
+  filter: blur(8px);
+  opacity: 0.65;
+}
+
+.folder-label {
+  position: absolute;
+  inset-inline-start: var(--space-4);
+  inset-block-end: var(--space-4);
+  margin: 0;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.08em;
+}
+
+.folder-reset {
+  appearance: none;
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  color: var(--color-text);
+  border-radius: var(--radius-pill);
+  padding: 0.55rem 1rem;
+  font: inherit;
+  font-size: var(--type-small);
+  cursor: pointer;
+  min-block-size: 44px;
+}
+
+.folder-reset:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.folder-reset:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.folder-fragment {
+  position: absolute;
+  width: min(62%, 15.5rem);
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+}
+
+.folder-fragment[data-state='dragging'] {
+  cursor: grabbing;
+}
+
+.folder-fragment__sheet {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-card) 92%, transparent);
+  border: 1px solid color-mix(in srgb, var(--fragment-accent) 45%, var(--color-border));
+  box-shadow:
+    0 10px 28px color-mix(in srgb, var(--color-glow) 40%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--fragment-accent) 18%, transparent);
+}
+
+.folder-fragment[data-state='dragging'] .folder-fragment__sheet,
+.folder-fragment[data-state='inspecting'] .folder-fragment__sheet {
+  box-shadow:
+    0 18px 40px color-mix(in srgb, var(--fragment-accent) 28%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--fragment-accent) 55%, transparent);
+}
+
+.folder-fragment__media {
+  position: relative;
+  overflow: hidden;
+  border-radius: calc(var(--radius-md) - 2px);
+  aspect-ratio: 5 / 3;
+  background: color-mix(in srgb, var(--fragment-accent) 18%, var(--color-surface));
+}
+
+.folder-fragment__image,
+.folder-fragment__placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.folder-fragment__placeholder.placeholder-media {
+  min-height: 100%;
+  border: 0;
+  border-radius: 0;
+}
+
+.folder-fragment__body {
+  display: grid;
+  gap: 0.35rem;
+  text-align: start;
+  padding-inline: 0.15rem 0.25rem;
+  padding-block-end: 0.15rem;
+}
+
+.folder-fragment__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.55rem;
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.folder-fragment__title {
+  margin: 0;
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.folder-fragment__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  align-items: center;
+}
+
+.folder-fragment__link {
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.folder-fragment__return {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: var(--type-small);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+  min-block-size: 44px;
+  padding: 0;
+}
+
+[data-theme='light'] .folder-front {
+  background: color-mix(in srgb, var(--color-card) 72%, transparent);
+  border-color: color-mix(in srgb, var(--color-accent) 28%, var(--color-border));
+}
+
+[data-theme='light'] .folder-fragment__sheet {
+  background: color-mix(in srgb, var(--color-card) 96%, white 4%);
+}
+
+@media (max-width: 767px) {
+  .folder-hero {
+    min-height: auto;
+    align-items: flex-start;
+    padding-block-start: var(--space-5);
+  }
+
+  .folder-hero__actions .btn {
+    flex: 1 1 100%;
+  }
+
+  .folder-shell {
+    aspect-ratio: 1.05;
+    inline-size: min(100%, 22rem);
+  }
+
+  .folder-fragment {
+    width: min(68%, 11.5rem);
+    touch-action: pan-y;
+  }
+
+  .folder-scene[data-narrow='true'] .folder-fragment {
+    width: min(70%, 12rem);
+  }
+
+  .folder-stack {
+    inset: 4% 6% 38%;
+  }
+
+  .folder-front {
+    block-size: 46%;
+  }
+
+  .folder-hero__title {
+    gap: 0.08em;
+  }
+
+  .folder-hero__title-serif {
+    font-size: clamp(2.1rem, 11vw, 3rem);
+  }
+
+  .folder-hero__title-sans {
+    font-size: clamp(1.05rem, 4.2vw, 1.35rem);
+  }
+}
+
+@media (max-height: 720px) and (min-width: 768px) {
+  .folder-hero {
+    min-height: auto;
+    padding-block: var(--space-5) var(--space-6);
+  }
+
+  .folder-shell {
+    inline-size: min(100%, 30rem);
+  }
+
+  .folder-hero__title-serif {
+    font-size: clamp(2rem, 4vw + 0.4rem, 3.25rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .folder-fragment {
+    transition: none;
+  }
+
+  .folder-shell__glow {
+    opacity: 0.55;
+  }
+}

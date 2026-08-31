@@ -19,12 +19,12 @@ export default defineConfig({
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
-      testMatch: /(smoke|seo)\.spec\.ts/,
+      testMatch: /(smoke|seo|folder-hero)\.spec\.ts/,
     },
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-      testMatch: /(smoke|seo)\.spec\.ts/,
+      testMatch: /(smoke|seo|folder-hero)\.spec\.ts/,
     },
   ],
   webServer: {

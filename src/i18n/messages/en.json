@@ -19,10 +19,23 @@
   "hero": {
     "eyebrow": "Independent / Available for selected roles & projects",
     "title": "Art Director & Creative Developer",
+    "titleSerif": "Art Director",
+    "titleSans": "Creative Developer",
     "statement": "I build visual identities, campaigns, and creative websites around strong ideas.",
     "discussRole": "Discuss a Role",
     "startProject": "Start a Project",
-    "exploreWork": "Explore My Work"
+    "exploreWork": "Explore My Work",
+    "folderInstruction": "Drag project cards to explore, or open them directly.",
+    "resetFolder": "Reset folder",
+    "openProject": "Open case study",
+    "returnToFolder": "Return to folder",
+    "selectedWorks": "Selected works",
+    "facets": {
+      "idea": "Idea",
+      "direction": "Direction",
+      "system": "System",
+      "experience": "Experience"
+    }
   },
   "sections": {
     "work": "Selected Work",

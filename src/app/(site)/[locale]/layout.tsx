@@ -11,7 +11,7 @@ import { ThemeProvider } from '@/components/theme/theme-provider';
 import { localeDirections } from '@/i18n/config';
 import { routing } from '@/i18n/routing';
 import { getPortfolioContent } from '@/lib/content/provider';
-import { ibmPlexArabic, manrope } from '@/lib/fonts';
+import { frauncesItalic, ibmPlexArabic, manrope } from '@/lib/fonts';
 import { getThemeColor } from '@/lib/seo/metadata';
 
 import '../../globals.css';
@@ -39,7 +39,8 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   const { siteSettings } = await getPortfolioContent();
   const direction = localeDirections[locale];
   const brandTitle = tMeta('siteTitle');
-  const fontClass = locale === 'ar' ? ibmPlexArabic.variable : manrope.variable;
+  const fontClass =
+    locale === 'ar' ? ibmPlexArabic.variable : `${manrope.variable} ${frauncesItalic.variable}`;
 
   return (
     <html lang={locale} dir={direction} className={fontClass} suppressHydrationWarning>

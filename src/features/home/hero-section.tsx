@@ -1,43 +1,69 @@
 import { getLocale, getTranslations } from 'next-intl/server';
 
+import { FolderScene } from '@/components/hero/folder-scene';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/ui/container';
 import { Eyebrow } from '@/components/ui/eyebrow';
-import type { SiteSettings } from '@/types/global';
+import { buildHeroFragments, filterPublishedSummaries } from '@/lib/content/hero-fragments';
 import { getLocalizedValue } from '@/lib/utilities/locale';
-import type { Locale } from '@/types/global';
+import type { Locale, SiteSettings } from '@/types/global';
+import type { ProjectSummary } from '@/types/project';
 
 type HeroSectionProps = {
   settings: SiteSettings;
+  projects: ProjectSummary[];
 };
 
-export async function HeroSection({ settings }: HeroSectionProps) {
+export async function HeroSection({ settings, projects }: HeroSectionProps) {
   const t = await getTranslations('hero');
   const locale = (await getLocale()) as Locale;
+  const published = filterPublishedSummaries(projects);
+  const fragments = buildHeroFragments(published, locale, {
+    idea: t('facets.idea'),
+    direction: t('facets.direction'),
+    system: t('facets.system'),
+    experience: t('facets.experience'),
+  });
 
   return (
     <section
       id="hero"
       aria-labelledby="hero-heading"
-      className="hero luminous-section luminous-section--hero section-padding"
+      className="hero folder-hero luminous-section luminous-section--hero section-padding"
     >
       <Container>
-        <div className="hero__grid">
+        <div className="folder-hero__grid">
           <Eyebrow>{getLocalizedValue(settings.eyebrow, locale, t('eyebrow'))}</Eyebrow>
-          <h1 id="hero-heading" className="text-display hero__title">
-            {t('title')}
+
+          <h1 id="hero-heading" className="folder-hero__title">
+            <span className="folder-hero__title-serif">{t('titleSerif')}</span>{' '}
+            <span className="folder-hero__title-sans">
+              {locale === 'en' ? (
+                <>
+                  <span className="folder-hero__amp">&amp; </span>
+                  {t('titleSans')}
+                </>
+              ) : (
+                t('titleSans')
+              )}
+            </span>
           </h1>
-          <p className="text-body-lg hero__statement">{t('statement')}</p>
-          <div className="hero__actions">
-            <Button href="#contact">{t('discussRole')}</Button>
-            <Button href="#contact" variant="secondary">
-              {t('startProject')}
-            </Button>
-          </div>
-          <div className="hero__explore">
-            <a href="#work" className="text-link text-link--inline">
-              {t('exploreWork')}
-            </a>
+
+          <FolderScene fragments={fragments} />
+
+          <div className="folder-hero__copy">
+            <p className="text-body-lg folder-hero__statement">{t('statement')}</p>
+            <div className="folder-hero__actions">
+              <Button href="#contact">{t('discussRole')}</Button>
+              <Button href="#contact" variant="secondary">
+                {t('startProject')}
+              </Button>
+            </div>
+            <div className="folder-hero__explore">
+              <a href="#work" className="text-link text-link--inline">
+                {t('exploreWork')}
+              </a>
+            </div>
           </div>
         </div>
       </Container>

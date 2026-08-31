@@ -19,10 +19,23 @@
   "hero": {
     "eyebrow": "مستقلة · متاحة لفرص وظيفية ومشاريع مختارة",
     "title": "مخرجة فنية ومطوّرة إبداعية",
+    "titleSerif": "مخرجة فنية",
+    "titleSans": "ومطوّرة إبداعية",
     "statement": "أبني هويات وحملات ومواقع إبداعية تنطلق من أفكار واضحة.",
     "discussRole": "ناقش فرصة وظيفية",
     "startProject": "ابدأ مشروعًا",
-    "exploreWork": "استكشف أعمالي"
+    "exploreWork": "استكشف أعمالي",
+    "folderInstruction": "اسحب بطاقات المشاريع لاستكشافها، أو افتحها مباشرة.",
+    "resetFolder": "أعد ترتيب المجلد",
+    "openProject": "افتح دراسة الحالة",
+    "returnToFolder": "أعد إلى المجلد",
+    "selectedWorks": "أعمال مختارة",
+    "facets": {
+      "idea": "فكرة",
+      "direction": "توجيه",
+      "system": "نظام",
+      "experience": "تجربة"
+    }
   },
   "sections": {
     "work": "أعمال مختارة",
