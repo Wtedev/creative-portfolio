@@ -45,15 +45,15 @@ export async function ContactSection({ contact }: ContactSectionProps) {
         <ul className="contact-panel__links">
           <li className="contact-panel__link-row">
             <span className="text-label">{tContact('email')}</span>
-            <a href={`mailto:${contact.email}`} className="text-link">
+            <a href={`mailto:${contact.email}`} className="text-link u-ltr">
               {contact.email}
             </a>
           </li>
           {contact.linkedin ? (
             <li className="contact-panel__link-row">
               <span className="text-label">{tContact('linkedin')}</span>
-              <a href={contact.linkedin} rel="noopener noreferrer" className="text-link">
-                LinkedIn
+              <a href={contact.linkedin} rel="noopener noreferrer" className="text-link u-ltr">
+                {tContact('linkedin')}
               </a>
             </li>
           ) : null}

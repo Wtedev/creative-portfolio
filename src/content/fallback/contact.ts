@@ -7,7 +7,7 @@ export const fallbackContact: ContactContent = {
   },
   body: {
     en: "I'm open to joining ambitious creative teams and collaborating with companies on selected identity, campaign and digital projects.",
-    ar: 'أنا منفتحة للانضمام إلى فرق إبداعية طموحة والتعاون مع شركات في مشاريع هوية وحملات وتجارب رقمية مختارة.',
+    ar: 'أنا منفتحة على الانضمام إلى فرق إبداعية طموحة والتعاون مع شركات في مشاريع هوية وحملات وتجارب رقمية مختارة.',
   },
   email: 'hello@example.com',
   linkedin: 'https://linkedin.com/in/placeholder',

@@ -9,9 +9,8 @@ Production-grade bilingual portfolio for an **Art Director & Creative Developer*
 - **CMS:** Sanity Studio, `next-sanity`, Portable Text
 - **i18n:** `next-intl`
 - **Theming:** `next-themes`
-- **Motion (installed, Phase 4):** Motion, Lenis
-- **Testing:** Vitest, React Testing Library, Playwright
-- **Quality:** ESLint, Prettier
+- **Motion:** Motion, Lenis (Phase 04+)
+- **Quality pass:** Phase 05 bilingual / theme / responsive audit documented in `docs/12-phase05-bilingual-theme-responsive.md`
 
 ## Installation
 

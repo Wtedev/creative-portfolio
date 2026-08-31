@@ -33,6 +33,35 @@ body[data-locale='en'] {
 
 body[data-locale='ar'] {
   font-family: var(--font-ar);
+  line-height: 1.7;
+}
+
+body[data-locale='ar'] .text-display,
+body[data-locale='ar'] .text-h1,
+body[data-locale='ar'] .text-h2,
+body[data-locale='ar'] .text-h3 {
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+body[data-locale='ar'] .text-label {
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+html,
+body {
+  transition: var(--theme-transition);
+}
+
+.u-ltr {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.u-break {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 a {

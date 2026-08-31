@@ -74,7 +74,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     <main id="main-content" className="project-page">
       {isEnabled ? (
         <p className="text-label project-page__preview" role="status">
-          Preview mode — unpublished changes may be visible.
+          {t('previewBanner')}
         </p>
       ) : null}
       <script
@@ -83,8 +83,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       />
       <div className="container section-padding">
         <nav className="project-page__nav" aria-label={t('backToWork')}>
-          <Link href="/#work" className="text-link">
-            ← {t('backToWork')}
+          <Link href="/#work" className="text-link text-link--inline">
+            {t('backToWork')}
           </Link>
         </nav>
 

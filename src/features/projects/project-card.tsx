@@ -1,6 +1,8 @@
+import type { CSSProperties } from 'react';
+
 import { ProjectCardMedia } from '@/components/motion/project-card-media';
 import { Link } from '@/i18n/navigation';
-import { getLocalizedValue } from '@/lib/utilities/locale';
+import { formatYear, getLocalizedValue } from '@/lib/utilities/locale';
 import type { ProjectSummary } from '@/types/project';
 import type { Locale } from '@/types/global';
 
@@ -10,10 +12,10 @@ type ProjectCardProps = {
   viewLabel: string;
 };
 
-export async function ProjectCard({ project, locale, viewLabel }: ProjectCardProps) {
+export function ProjectCard({ project, locale, viewLabel }: ProjectCardProps) {
   const category = project.categories[0] ?? project.client;
   const accentStyle = project.accentColor
-    ? ({ ['--project-accent' as string]: project.accentColor } as React.CSSProperties)
+    ? ({ ['--project-accent']: project.accentColor } as CSSProperties)
     : undefined;
 
   return (
@@ -35,7 +37,9 @@ export async function ProjectCard({ project, locale, viewLabel }: ProjectCardPro
         <p className="text-body">{getLocalizedValue(project.shortDescription, locale)}</p>
         <div className="work-card__meta">
           <span className="work-card__meta-item work-card__category">{category}</span>
-          <span className="work-card__meta-item">{project.year}</span>
+          <span className="work-card__meta-item" dir="ltr">
+            {formatYear(project.year, locale)}
+          </span>
           <span className="work-card__meta-item">{getLocalizedValue(project.role, locale)}</span>
         </div>
         <div className="work-card__footer">

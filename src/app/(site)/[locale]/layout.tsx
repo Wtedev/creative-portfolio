@@ -1,5 +1,5 @@
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 
@@ -35,8 +35,10 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   setRequestLocale(locale);
 
   const messages = await getMessages();
+  const tMeta = await getTranslations('meta');
   const { siteSettings } = await getPortfolioContent();
   const direction = localeDirections[locale];
+  const brandTitle = tMeta('siteTitle');
 
   return (
     <html
@@ -62,7 +64,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
           <NextIntlClientProvider messages={messages}>
             <ClientMotionShell>
               <SkipLink />
-              <SiteHeader siteTitle={siteSettings.siteTitle} />
+              <SiteHeader siteTitle={brandTitle} />
               {children}
               <SiteFooter settings={siteSettings} />
             </ClientMotionShell>

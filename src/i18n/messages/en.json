@@ -4,6 +4,7 @@
     "siteDescription": "Portfolio showcasing art direction, visual identities, campaigns, and creative websites."
   },
   "navigation": {
+    "primary": "Primary",
     "work": "Work",
     "capabilities": "Capabilities",
     "tools": "Tools",
@@ -57,9 +58,16 @@
     }
   },
   "tools": {
-    "scrollPrev": "Scroll tools left",
-    "scrollNext": "Scroll tools right",
+    "scrollPrev": "Show previous tools",
+    "scrollNext": "Show next tools",
     "trackLabel": "Creative technology tools",
+    "categories": {
+      "direction": "Direction",
+      "design": "Design",
+      "build": "Build",
+      "motion": "Motion",
+      "ai": "AI"
+    },
     "proficiency": {
       "working": "Working",
       "comfortable": "Comfortable",
@@ -94,7 +102,14 @@
     "year": "Year",
     "role": "Role",
     "notFound": "Project not found",
-    "sampleLabel": "Sample placeholder project"
+    "sampleLabel": "Sample placeholder project",
+    "previewBanner": "Preview mode — unpublished changes may be visible.",
+    "unsupportedBlock": "Unsupported content block: {type}"
+  },
+  "errors": {
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "The page you requested is unavailable.",
+    "home": "Home"
   },
   "contact": {
     "email": "Email",

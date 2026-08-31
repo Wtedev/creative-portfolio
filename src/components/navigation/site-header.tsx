@@ -1,7 +1,8 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { usePathname } from 'next/navigation';
 
 import { LocaleSwitcher } from '@/components/locale/locale-switcher';
 import { Button } from '@/components/ui/button';
@@ -26,11 +27,21 @@ type SiteHeaderProps = {
 export function SiteHeader({ siteTitle }: SiteHeaderProps) {
   const t = useTranslations('navigation');
   const tHero = useTranslations('hero');
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPathname, setMenuPathname] = useState(pathname);
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const firstLinkRef = useRef<HTMLAnchorElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const menuId = useId();
+
+  if (pathname !== menuPathname) {
+    setMenuPathname(pathname);
+    if (menuOpen) {
+      setMenuOpen(false);
+    }
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 64);
@@ -67,19 +78,46 @@ export function SiteHeader({ siteTitle }: SiteHeaderProps) {
   }, []);
 
   useEffect(() => {
-    if (!menuOpen) return;
+    if (!menuOpen) {
+      document.body.style.removeProperty('overflow');
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const panel = panelRef.current;
+    const focusable = panel?.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), select, [tabindex]:not([tabindex="-1"])',
+    );
+    const first = focusable?.[0];
+    const last = focusable?.[focusable.length - 1];
+    first?.focus();
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setMenuOpen(false);
         menuButtonRef.current?.focus();
+        return;
+      }
+
+      if (event.key !== 'Tab' || !first || !last) return;
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     };
 
     document.addEventListener('keydown', onKeyDown);
-    firstLinkRef.current?.focus();
 
-    return () => document.removeEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', onKeyDown);
+    };
   }, [menuOpen]);
 
   const closeMenu = useCallback(() => {
@@ -95,7 +133,7 @@ export function SiteHeader({ siteTitle }: SiteHeaderProps) {
             {siteTitle}
           </a>
 
-          <nav className="site-header__nav" aria-label={t('work')}>
+          <nav className="site-header__nav" aria-label={t('primary')}>
             <ul className="site-header__nav-list">
               {navItems.map((item) => (
                 <li key={item.key}>
@@ -122,7 +160,7 @@ export function SiteHeader({ siteTitle }: SiteHeaderProps) {
               type="button"
               className="site-header__menu-toggle"
               aria-expanded={menuOpen}
-              aria-controls="mobile-navigation"
+              aria-controls={menuId}
               onClick={() => setMenuOpen((open) => !open)}
             >
               <span className="visually-hidden">{menuOpen ? t('closeMenu') : t('openMenu')}</span>
@@ -132,14 +170,13 @@ export function SiteHeader({ siteTitle }: SiteHeaderProps) {
         </div>
       </Container>
 
-      <div id="mobile-navigation" className="site-header__mobile-panel" hidden={!menuOpen}>
+      <div ref={panelRef} id={menuId} className="site-header__mobile-panel" hidden={!menuOpen}>
         <Container>
-          <nav aria-label={t('work')}>
+          <nav aria-label={t('primary')}>
             <ul className="site-header__mobile-nav-list">
-              {navItems.map((item, index) => (
+              {navItems.map((item) => (
                 <li key={item.key}>
                   <a
-                    ref={index === 0 ? firstLinkRef : undefined}
                     href={item.href}
                     className="site-header__mobile-nav-link"
                     aria-current={activeSection === item.href.slice(1) ? 'true' : undefined}
@@ -158,7 +195,9 @@ export function SiteHeader({ siteTitle }: SiteHeaderProps) {
             <Button href="#contact" variant="primary" onClick={closeMenu}>
               {tHero('startProject')}
             </Button>
-            <LocaleSwitcher />
+            <div onClick={closeMenu}>
+              <LocaleSwitcher />
+            </div>
             <ThemeToggle />
           </div>
         </Container>

@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+
 import { Link } from '@/i18n/navigation';
 
 export default async function ProjectNotFound() {
@@ -7,7 +8,9 @@ export default async function ProjectNotFound() {
   return (
     <main id="main-content" className="container section-padding">
       <h1 className="text-h1">{t('notFound')}</h1>
-      <Link href="/#work">← {t('backToWork')}</Link>
+      <Link href="/#work" className="text-link text-link--inline">
+        {t('backToWork')}
+      </Link>
     </main>
   );
 }

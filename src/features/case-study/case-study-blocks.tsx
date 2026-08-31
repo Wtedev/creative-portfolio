@@ -204,7 +204,11 @@ export async function CaseStudyBlocks({ blocks }: CaseStudyBlocksProps) {
         if (!isKnownCaseStudyBlock(block)) {
           return (
             <div key={block._key} className="case-study-block" role="note">
-              <p className="text-small">[Unsupported block: {block.originalType ?? block._type}]</p>
+              <p className="text-small">
+                {tProject('unsupportedBlock', {
+                  type: block.originalType ?? block._type,
+                })}
+              </p>
               <PlaceholderMedia label={tPlaceholders('image')} />
             </div>
           );

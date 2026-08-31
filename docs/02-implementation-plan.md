@@ -86,6 +86,8 @@
 
 ## Phase 5 — Bilingual and Responsive Polish
 
+**Status:** Complete (see `docs/12-phase05-bilingual-theme-responsive.md`).
+
 **Objective:** Full Arabic typography and RTL validation; responsive behavior.
 
 **Deliverables:**
@@ -94,6 +96,7 @@
 - Mobile/tablet layouts for all sections
 - Content parity audit (EN/AR independently edited)
 - Locale switcher and metadata parity
+- Theme FOUC mitigation and persistence verification
 
 **Dependencies:** Phases 3–4.
 

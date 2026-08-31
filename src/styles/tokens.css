@@ -42,10 +42,47 @@
   --thread-y: 40%;
   --thread-opacity: 0.2;
 
+  /* Dark palette as pre-hydration fallback to avoid unstyled FOUC */
+  --color-background: #111017;
+  --color-surface: #191721;
+  --color-card: #201b2a;
+  --color-text: #f1eef4;
+  --color-text-secondary: #b9b3c2;
+  --color-border: rgba(184, 157, 255, 0.18);
+  --color-accent: #9a6cff;
+  --color-accent-soft: #c2a7ff;
+  --color-accent-cyan: #58d6f7;
+  --color-glow: rgba(154, 108, 255, 0.22);
+  --color-glow-strong: rgba(154, 108, 255, 0.28);
+  --color-nav-bg: rgba(25, 23, 33, 0.82);
+  --color-grid-line: rgba(154, 108, 255, 0.06);
+
   --focus-ring: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-accent-cyan);
 
   --font-en: var(--font-manrope), 'Segoe UI', system-ui, sans-serif;
   --font-ar: var(--font-ibm-plex-arabic), 'Segoe UI', 'Tahoma', sans-serif;
+
+  --theme-transition:
+    color 240ms var(--ease-out), background-color 240ms var(--ease-out),
+    border-color 240ms var(--ease-out), box-shadow 240ms var(--ease-out);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-background: #f3f1f5;
+    --color-surface: #eae7ed;
+    --color-card: #f8f6f9;
+    --color-text: #1a1820;
+    --color-text-secondary: #625d69;
+    --color-border: rgba(93, 72, 130, 0.16);
+    --color-accent: #7047d9;
+    --color-accent-soft: #8b6ae8;
+    --color-accent-cyan: #087f9c;
+    --color-glow: rgba(112, 71, 217, 0.14);
+    --color-glow-strong: rgba(112, 71, 217, 0.2);
+    --color-nav-bg: rgba(243, 241, 245, 0.88);
+    --color-grid-line: rgba(93, 72, 130, 0.08);
+  }
 }
 
 [data-theme='dark'] {
@@ -98,5 +135,6 @@
     --motion-standard: 0ms;
     --motion-reveal: 0ms;
     --motion-section: 0ms;
+    --theme-transition: none;
   }
 }

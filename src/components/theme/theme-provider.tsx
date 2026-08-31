@@ -15,7 +15,7 @@ export function ThemeProvider({ children, defaultTheme = 'system' }: ThemeProvid
       defaultTheme={defaultTheme}
       enableSystem
       storageKey="portfolio-theme"
-      disableTransitionOnChange
+      disableTransitionOnChange={false}
     >
       {children}
     </NextThemesProvider>
