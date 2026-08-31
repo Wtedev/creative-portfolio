@@ -105,3 +105,29 @@
 .ambient-light[aria-hidden='true'] {
   speak: never;
 }
+
+.luminous-thread {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: var(--thread-opacity, 0.2);
+  background: radial-gradient(
+    circle at var(--thread-x, 50%) var(--thread-y, 40%),
+    var(--color-glow-strong),
+    transparent 62%
+  );
+  transition: opacity var(--motion-section) var(--ease-out-expo);
+}
+
+@media (max-width: 767px) {
+  .luminous-thread {
+    opacity: calc(var(--thread-opacity, 0.2) * 0.75);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .luminous-thread {
+    transition: none;
+  }
+}

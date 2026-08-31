@@ -1,4 +1,4 @@
-import { PlaceholderMedia } from '@/components/ui/placeholder-media';
+import { ProjectCardMedia } from '@/components/motion/project-card-media';
 import { Link } from '@/i18n/navigation';
 import { getLocalizedValue } from '@/lib/utilities/locale';
 import type { ProjectSummary } from '@/types/project';
@@ -10,14 +10,23 @@ type ProjectCardProps = {
   viewLabel: string;
 };
 
-export function ProjectCard({ project, locale, viewLabel }: ProjectCardProps) {
+export async function ProjectCard({ project, locale, viewLabel }: ProjectCardProps) {
   const category = project.categories[0] ?? project.client;
+  const accentStyle = project.accentColor
+    ? ({ ['--project-accent' as string]: project.accentColor } as React.CSSProperties)
+    : undefined;
 
   return (
-    <article className="work-card">
+    <Link
+      href={`/project/${project.slug}`}
+      className="work-card work-card--link"
+      style={accentStyle}
+    >
       <div className="work-card__media">
-        <PlaceholderMedia
-          label={getLocalizedValue(project.coverAlt, locale)}
+        <ProjectCardMedia
+          slug={project.slug}
+          cover={project.cover}
+          alt={getLocalizedValue(project.coverAlt, locale)}
           variant={project.cardSize === 'hero' ? 'wide' : 'landscape'}
         />
       </div>
@@ -30,11 +39,9 @@ export function ProjectCard({ project, locale, viewLabel }: ProjectCardProps) {
           <span className="work-card__meta-item">{getLocalizedValue(project.role, locale)}</span>
         </div>
         <div className="work-card__footer">
-          <Link href={`/project/${project.slug}`} className="text-link text-link--inline">
-            {viewLabel}
-          </Link>
+          <span className="text-link text-link--inline work-card__action">{viewLabel}</span>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }

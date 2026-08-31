@@ -34,6 +34,14 @@
   --z-nav: 100;
   --z-overlay: 200;
 
+  --distance-small: 0.375rem;
+  --distance-medium: 1rem;
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --thread-x: 50%;
+  --thread-y: 40%;
+  --thread-opacity: 0.2;
+
   --focus-ring: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-accent-cyan);
 
   --font-en: var(--font-manrope), 'Segoe UI', system-ui, sans-serif;

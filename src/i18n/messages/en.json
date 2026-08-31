@@ -86,6 +86,10 @@
   "project": {
     "backToWork": "Back to work",
     "viewCaseStudy": "View Case Study",
+    "nextProject": "Next project",
+    "activatePrototype": "Load prototype",
+    "categories": "Categories",
+    "services": "Services",
     "client": "Client",
     "year": "Year",
     "role": "Role",

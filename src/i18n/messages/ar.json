@@ -86,6 +86,10 @@
   "project": {
     "backToWork": "العودة إلى الأعمال",
     "viewCaseStudy": "عرض دراسة الحالة",
+    "nextProject": "المشروع التالي",
+    "activatePrototype": "تحميل النموذج",
+    "categories": "التصنيفات",
+    "services": "الخدمات",
     "client": "العميل",
     "year": "السنة",
     "role": "الدور",

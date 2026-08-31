@@ -4,8 +4,12 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { CaseStudyBlocks } from '@/features/case-study/case-study-blocks';
+import { NextProjectSection } from '@/features/projects/next-project-section';
+import { ProjectFacts } from '@/features/projects/project-facts';
+import { ProjectHeroMedia } from '@/features/projects/project-hero-media';
 import { Link } from '@/i18n/navigation';
-import { getProjectDetail, getPublishedProjects } from '@/lib/content/provider';
+import { getPublishedProjects, getProjectDetail } from '@/lib/content/provider';
+import { getNextPublishedProject, toProjectSummary } from '@/lib/content/projects';
 import { buildCreativeWorkJsonLd, buildPageMetadata } from '@/lib/seo/metadata';
 import { formatYear, getLocalizedValue } from '@/lib/utilities/locale';
 import { getSiteUrl } from '@/lib/env';
@@ -53,6 +57,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const typedLocale = locale as Locale;
   const t = await getTranslations('project');
   const { project } = detail;
+  const publishedProjects = await getPublishedProjects({ preview: isEnabled });
+  const nextProject = getNextPublishedProject(publishedProjects, slug);
+  const nextProjectSummary = nextProject ? toProjectSummary(nextProject) : null;
+  const category = project.categories[0] ?? project.client;
 
   const creativeWorkJsonLd = buildCreativeWorkJsonLd({
     name: getLocalizedValue(project.title, typedLocale),
@@ -63,9 +71,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   });
 
   return (
-    <main id="main-content" className="container section-padding">
+    <main id="main-content" className="project-page">
       {isEnabled ? (
-        <p className="text-label" role="status">
+        <p className="text-label project-page__preview" role="status">
           Preview mode — unpublished changes may be visible.
         </p>
       ) : null}
@@ -73,29 +81,38 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(creativeWorkJsonLd) }}
       />
-      <Link href="/#work" className="text-small">
-        ← {t('backToWork')}
-      </Link>
-      <header className="project-header">
-        <p className="text-label">{t('sampleLabel')}</p>
-        <h1 className="text-display">{getLocalizedValue(project.title, typedLocale)}</h1>
-        <p className="text-body-lg">{getLocalizedValue(project.shortDescription, typedLocale)}</p>
-        <dl className="project-meta">
-          <div>
-            <dt className="text-label">{t('client')}</dt>
-            <dd>{project.client}</dd>
+      <div className="container section-padding">
+        <nav className="project-page__nav" aria-label={t('backToWork')}>
+          <Link href="/#work" className="text-link">
+            ← {t('backToWork')}
+          </Link>
+        </nav>
+
+        <header className="project-hero">
+          <div className="project-hero__copy">
+            <p className="text-label project-hero__eyebrow">
+              {category} · {formatYear(project.year, typedLocale)}
+            </p>
+            <h1 className="text-display project-hero__title">
+              {getLocalizedValue(project.title, typedLocale)}
+            </h1>
+            <p className="text-body-lg project-hero__description">
+              {getLocalizedValue(project.shortDescription, typedLocale)}
+            </p>
           </div>
-          <div>
-            <dt className="text-label">{t('year')}</dt>
-            <dd>{formatYear(project.year, typedLocale)}</dd>
-          </div>
-          <div>
-            <dt className="text-label">{t('role')}</dt>
-            <dd>{getLocalizedValue(project.role, typedLocale)}</dd>
-          </div>
-        </dl>
-      </header>
-      <CaseStudyBlocks blocks={project.caseStudyBlocks} />
+          <ProjectHeroMedia
+            cover={project.cover}
+            alt={getLocalizedValue(project.coverAlt, typedLocale)}
+            slug={project.slug}
+          />
+        </header>
+
+        <ProjectFacts project={project} locale={typedLocale} />
+        <CaseStudyBlocks blocks={project.caseStudyBlocks} />
+        {nextProjectSummary ? (
+          <NextProjectSection nextProject={nextProjectSummary} locale={typedLocale} />
+        ) : null}
+      </div>
     </main>
   );
 }

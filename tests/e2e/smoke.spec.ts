@@ -30,7 +30,10 @@ test.describe('Portfolio smoke tests', () => {
 
   test('locale switcher preserves route context', async ({ page }) => {
     await page.goto('/en/project/sample-project');
-    await page.getByRole('banner').getByRole('link', { name: /العربية|Arabic/i }).click();
+    await page
+      .getByRole('banner')
+      .getByRole('link', { name: /العربية|Arabic/i })
+      .click();
     await expect(page).toHaveURL(/\/ar\/project\/sample-project/);
   });
 
@@ -73,9 +76,24 @@ test.describe('Portfolio smoke tests', () => {
     expect(overflow).toBe(false);
   });
 
-  test('sample project page loads', async ({ page }) => {
+  test('project card opens case study', async ({ page }) => {
+    await page.goto('/en');
+    await page.locator('.work-card--link').first().click();
+    await expect(page).toHaveURL(/\/en\/project\//);
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  });
+
+  test('next project link is present on case study', async ({ page }) => {
     await page.goto('/en/project/sample-project');
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Luminous Systems');
+    await expect(page.getByText('Next project', { exact: true })).toBeVisible();
+    await expect(page.getByRole('link', { name: /View Case Study/i }).last()).toBeVisible();
+  });
+
+  test('luminous thread exists on homepage only', async ({ page }) => {
+    await page.goto('/en');
+    await expect(page.getByTestId('luminous-thread')).toBeVisible();
+    await page.goto('/en/project/sample-project');
+    await expect(page.getByTestId('luminous-thread')).toHaveCount(0);
   });
 
   test('studio shows setup message without credentials', async ({ page }) => {

@@ -1,5 +1,6 @@
 import { getLocale, getTranslations } from 'next-intl/server';
 
+import { RevealOnView } from '@/components/motion/reveal-on-view';
 import { Section } from '@/components/ui/section';
 import { ProjectCard } from '@/features/projects/project-card';
 import type { ProjectSummary } from '@/types/project';
@@ -23,10 +24,15 @@ export async function SelectedWorkSection({ projects }: SelectedWorkSectionProps
   return (
     <Section id="work" title={t('work')} intro={t('workIntro')} luminous="work">
       <ul className="work-grid">
-        {projects.map((project) => (
-          <li key={project._id} className={gridItemClass(project.cardSize)}>
+        {projects.map((project, index) => (
+          <RevealOnView
+            key={project._id}
+            as="li"
+            className={gridItemClass(project.cardSize)}
+            delay={index * 0.05}
+          >
             <ProjectCard project={project} locale={locale} viewLabel={tProject('viewCaseStudy')} />
-          </li>
+          </RevealOnView>
         ))}
       </ul>
     </Section>

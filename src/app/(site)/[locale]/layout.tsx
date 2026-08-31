@@ -6,6 +6,7 @@ import type { ReactNode } from 'react';
 import { SkipLink } from '@/components/accessibility/skip-link';
 import { SiteFooter } from '@/components/layout/site-footer';
 import { SiteHeader } from '@/components/navigation/site-header';
+import { ClientMotionShell } from '@/components/motion/client-motion-shell';
 import { ThemeProvider } from '@/components/theme/theme-provider';
 import { localeDirections } from '@/i18n/config';
 import { routing } from '@/i18n/routing';
@@ -59,10 +60,12 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
       <body data-locale={locale} suppressHydrationWarning>
         <ThemeProvider defaultTheme={siteSettings.defaultTheme}>
           <NextIntlClientProvider messages={messages}>
-            <SkipLink />
-            <SiteHeader siteTitle={siteSettings.siteTitle} />
-            {children}
-            <SiteFooter settings={siteSettings} />
+            <ClientMotionShell>
+              <SkipLink />
+              <SiteHeader siteTitle={siteSettings.siteTitle} />
+              {children}
+              <SiteFooter settings={siteSettings} />
+            </ClientMotionShell>
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>
