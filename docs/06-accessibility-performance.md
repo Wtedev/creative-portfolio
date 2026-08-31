@@ -21,6 +21,8 @@
 - Keyboard-only navigation test
 - Arabic screen reader validation
 
+Phase 06 verified automated accessibility at 100 on representative routes (local Lighthouse, fallback content). Manual screen-reader sign-off remains recommended before launch.
+
 ## Performance Architecture (Phase 1)
 
 - Server Components by default
@@ -31,12 +33,12 @@
 - Lazy loading below fold (Phase 4)
 - No global state libraries
 
-## Production Targets (Not Yet Verified)
+## Production Targets (Verified Locally — Phase 06)
 
-| Metric | Target  |
-| ------ | ------- |
-| LCP    | < 2.5s  |
-| INP    | < 200ms |
-| CLS    | < 0.1   |
+| Metric | Target  | Local prod result (fallback, localhost) |
+| ------ | ------- | --------------------------------------- |
+| LCP    | < 2.5s  | 3.4–3.9s (font-bound; see launch guide) |
+| INP    | < 200ms | Lab proxy TBT 40–50ms                   |
+| CLS    | < 0.1   | 0–0.024                                 |
 
-Measure on production-like build in Phase 6 only.
+See `docs/13-phase06-production-readiness.md` for before/after notes and production remeasurement steps.

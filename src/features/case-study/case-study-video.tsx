@@ -1,6 +1,6 @@
 'use client';
 
-import { useReducedMotion } from 'motion/react';
+import { useEffect, useRef } from 'react';
 
 import { PlaceholderMedia } from '@/components/ui/placeholder-media';
 import { getLocalizedValue } from '@/lib/utilities/locale';
@@ -13,10 +13,20 @@ type CaseStudyVideoProps = {
 };
 
 export function CaseStudyVideo({ block, locale }: CaseStudyVideoProps) {
-  const reducedMotion = useReducedMotion();
+  const videoRef = useRef<HTMLVideoElement>(null);
   const title = block.title ? getLocalizedValue(block.title, locale) : undefined;
   const fallback = getLocalizedValue(block.fallbackText, locale);
   const src = block.fileUrl ?? block.externalUrl;
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !block.autoplay) return;
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) return;
+
+    void video.play().catch(() => undefined);
+  }, [block.autoplay, src]);
 
   if (!src) {
     return (
@@ -30,12 +40,12 @@ export function CaseStudyVideo({ block, locale }: CaseStudyVideoProps) {
   return (
     <figure className="case-study-block case-study-block--video">
       <video
+        ref={videoRef}
         className="case-study-video"
         controls
         playsInline
         preload="metadata"
         poster={block.poster}
-        autoPlay={Boolean(block.autoplay && !reducedMotion)}
         muted={block.muted ?? block.autoplay}
         loop={block.loop}
       >

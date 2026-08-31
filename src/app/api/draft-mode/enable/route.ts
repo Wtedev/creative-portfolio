@@ -2,6 +2,8 @@ import { draftMode } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 import { getSanityPreviewSecret, isPreviewConfigured } from '@/lib/env';
+import { sanitizeInternalRedirect } from '@/lib/seo/urls';
+import type { Locale } from '@/types/global';
 
 export async function GET(request: Request) {
   if (!isPreviewConfigured()) {
@@ -11,9 +13,13 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const secret = searchParams.get('secret');
   const slug = searchParams.get('slug');
-  const locale = searchParams.get('locale') ?? 'en';
-  const redirectPath =
-    searchParams.get('redirect') ?? (slug ? `/${locale}/project/${slug}` : `/${locale}`);
+  const locale = (searchParams.get('locale') ?? 'en') as Locale;
+  const defaultRedirect = slug ? `/${locale}/project/${slug}` : `/${locale}`;
+  const redirectPath = sanitizeInternalRedirect(
+    searchParams.get('redirect'),
+    locale,
+    defaultRedirect,
+  );
 
   if (secret !== getSanityPreviewSecret()) {
     return new NextResponse('Invalid preview secret', { status: 401 });

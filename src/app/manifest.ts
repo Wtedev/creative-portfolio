@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: 'Portfolio',
     description: 'Art Director & Creative Developer portfolio',
     start_url: '/en',
-    display: 'standalone',
+    display: 'browser',
     background_color: '#F3F1F5',
     theme_color: '#111017',
     lang: 'en',

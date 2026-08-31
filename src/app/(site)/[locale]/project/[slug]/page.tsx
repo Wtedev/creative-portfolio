@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { StructuredData } from '@/components/seo/structured-data';
 import { CaseStudyBlocks } from '@/features/case-study/case-study-blocks';
 import { NextProjectSection } from '@/features/projects/next-project-section';
 import { ProjectFacts } from '@/features/projects/project-facts';
@@ -11,8 +12,8 @@ import { Link } from '@/i18n/navigation';
 import { getPublishedProjects, getProjectDetail } from '@/lib/content/provider';
 import { getNextPublishedProject, toProjectSummary } from '@/lib/content/projects';
 import { buildCreativeWorkJsonLd, buildPageMetadata } from '@/lib/seo/metadata';
+import { buildAbsoluteUrl } from '@/lib/seo/urls';
 import { formatYear, getLocalizedValue } from '@/lib/utilities/locale';
-import { getSiteUrl } from '@/lib/env';
 import type { Locale } from '@/types/global';
 
 type ProjectPageProps = {
@@ -32,6 +33,8 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
     title: getLocalizedValue(detail.project.seoTitle, typedLocale),
     description: getLocalizedValue(detail.project.seoDescription, typedLocale),
     path: `/project/${slug}`,
+    ogImage: detail.project.ogImage,
+    noIndex: isEnabled,
   });
 }
 
@@ -65,7 +68,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const creativeWorkJsonLd = buildCreativeWorkJsonLd({
     name: getLocalizedValue(project.title, typedLocale),
     description: getLocalizedValue(project.shortDescription, typedLocale),
-    url: `${getSiteUrl()}/${locale}/project/${slug}`,
+    url: buildAbsoluteUrl(typedLocale, `/project/${slug}`),
     dateCreated: String(project.year),
     creator: getLocalizedValue(detail.siteSettings.professionalTitle, typedLocale),
   });
@@ -77,10 +80,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           {t('previewBanner')}
         </p>
       ) : null}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(creativeWorkJsonLd) }}
-      />
+      {!isEnabled ? <StructuredData data={creativeWorkJsonLd} /> : null}
       <div className="container section-padding">
         <nav className="project-page__nav" aria-label={t('backToWork')}>
           <Link href="/#work" className="text-link text-link--inline">

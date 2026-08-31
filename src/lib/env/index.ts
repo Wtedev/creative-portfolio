@@ -1,5 +1,5 @@
 export function getSiteUrl(): string {
-  return process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  return process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ?? 'http://localhost:3000';
 }
 
 export function getSanityProjectId(): string | undefined {
@@ -35,4 +35,40 @@ export function isPreviewConfigured(): boolean {
 
 export function isPublicEnvVar(name: string): boolean {
   return name.startsWith('NEXT_PUBLIC_');
+}
+
+export function isValidPublicSiteUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+export function isProductionSiteOrigin(): boolean {
+  try {
+    const { hostname } = new URL(getSiteUrl());
+    return hostname !== 'localhost' && hostname !== '127.0.0.1';
+  } catch {
+    return false;
+  }
+}
+
+export function validateProductionEnv(): string[] {
+  const warnings: string[] = [];
+
+  if (!isProductionSiteOrigin()) {
+    warnings.push('Set NEXT_PUBLIC_SITE_URL to the production domain before launch.');
+  }
+
+  if (!isValidPublicSiteUrl(getSiteUrl())) {
+    warnings.push('NEXT_PUBLIC_SITE_URL must be a valid absolute http(s) URL.');
+  }
+
+  if (!isSanityConfigured()) {
+    warnings.push('Sanity is not configured; the site will serve fallback fixtures.');
+  }
+
+  return warnings;
 }

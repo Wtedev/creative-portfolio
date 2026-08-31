@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 
 import { ProjectCoverMedia } from '@/components/media/project-cover-media';
 
@@ -9,18 +9,19 @@ type ProjectCardMediaProps = {
   cover?: string;
   alt: string;
   variant: 'landscape' | 'wide';
+  priority?: boolean;
 };
 
-export function ProjectCardMedia({ slug, cover, alt, variant }: ProjectCardMediaProps) {
-  const reducedMotion = useReducedMotion();
-
-  if (reducedMotion) {
-    return <ProjectCoverMedia cover={cover} alt={alt} variant={variant} />;
-  }
-
+export function ProjectCardMedia({
+  slug,
+  cover,
+  alt,
+  variant,
+  priority = false,
+}: ProjectCardMediaProps) {
   return (
     <motion.div layoutId={`project-cover-${slug}`} className="work-card__media-motion">
-      <ProjectCoverMedia cover={cover} alt={alt} variant={variant} />
+      <ProjectCoverMedia cover={cover} alt={alt} variant={variant} priority={priority} />
     </motion.div>
   );
 }

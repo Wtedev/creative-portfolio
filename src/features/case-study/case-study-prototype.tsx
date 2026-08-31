@@ -49,6 +49,7 @@ export function CaseStudyPrototype({ block, locale, activateLabel }: CaseStudyPr
           className="case-study-prototype__frame"
           loading="lazy"
           allow="fullscreen"
+          sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
         />
       )}
     </div>

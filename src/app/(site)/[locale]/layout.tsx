@@ -39,14 +39,10 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   const { siteSettings } = await getPortfolioContent();
   const direction = localeDirections[locale];
   const brandTitle = tMeta('siteTitle');
+  const fontClass = locale === 'ar' ? ibmPlexArabic.variable : manrope.variable;
 
   return (
-    <html
-      lang={locale}
-      dir={direction}
-      className={`${manrope.variable} ${ibmPlexArabic.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang={locale} dir={direction} className={fontClass} suppressHydrationWarning>
       <head>
         <meta
           name="theme-color"

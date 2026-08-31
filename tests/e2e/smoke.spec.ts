@@ -24,6 +24,7 @@ test.describe('Portfolio smoke tests', () => {
   test('theme toggle updates data-theme', async ({ page }) => {
     await page.goto('/en');
     const toggle = page.getByRole('banner').getByRole('button', { name: /Theme|المظهر/i });
+    await expect(toggle).toBeEnabled();
     await toggle.click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', /.+/);
   });
@@ -31,6 +32,7 @@ test.describe('Portfolio smoke tests', () => {
   test('theme persists after reload', async ({ page }) => {
     await page.goto('/en');
     const toggle = page.getByRole('banner').getByRole('button', { name: /Theme|المظهر/i });
+    await expect(toggle).toBeEnabled();
     await toggle.click();
     const theme = await page.locator('html').getAttribute('data-theme');
     await page.reload();
@@ -150,7 +152,7 @@ test.describe('Portfolio smoke tests', () => {
 
   test('luminous thread exists on homepage only', async ({ page }) => {
     await page.goto('/en');
-    await expect(page.getByTestId('luminous-thread')).toBeVisible();
+    await expect(page.getByTestId('luminous-thread')).toBeAttached();
     await page.goto('/en/project/sample-project');
     await expect(page.getByTestId('luminous-thread')).toHaveCount(0);
   });

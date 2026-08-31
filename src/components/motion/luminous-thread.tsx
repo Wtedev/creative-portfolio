@@ -52,6 +52,8 @@ export function LuminousThread() {
 
     const observer = new IntersectionObserver(
       (entries) => {
+        if (document.hidden) return;
+
         const visible = entries
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
@@ -73,7 +75,7 @@ export function LuminousThread() {
 
     let raf = 0;
     const onPointerMove = (event: PointerEvent) => {
-      if (!finePointer) return;
+      if (!finePointer || document.hidden) return;
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
         pointerRef.current = {
@@ -84,11 +86,21 @@ export function LuminousThread() {
       });
     };
 
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(raf);
+        return;
+      }
+      applyState(activeSectionRef.current, finePointer ? 0.08 : 0);
+    };
+
     window.addEventListener('pointermove', onPointerMove, { passive: true });
+    document.addEventListener('visibilitychange', onVisibilityChange);
 
     return () => {
       observer.disconnect();
       window.removeEventListener('pointermove', onPointerMove);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
       cancelAnimationFrame(raf);
       delete root.dataset.luminousSection;
     };

@@ -12,6 +12,9 @@
 
 # testing
 /coverage
+.phase06-baseline/
+playwright-report/
+test-results/
 
 # next.js
 /.next/

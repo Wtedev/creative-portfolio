@@ -10,9 +10,10 @@ type ProjectCardProps = {
   project: ProjectSummary;
   locale: Locale;
   viewLabel: string;
+  priority?: boolean;
 };
 
-export function ProjectCard({ project, locale, viewLabel }: ProjectCardProps) {
+export function ProjectCard({ project, locale, viewLabel, priority = false }: ProjectCardProps) {
   const category = project.categories[0] ?? project.client;
   const accentStyle = project.accentColor
     ? ({ ['--project-accent']: project.accentColor } as CSSProperties)
@@ -30,6 +31,7 @@ export function ProjectCard({ project, locale, viewLabel }: ProjectCardProps) {
           cover={project.cover}
           alt={getLocalizedValue(project.coverAlt, locale)}
           variant={project.cardSize === 'hero' ? 'wide' : 'landscape'}
+          priority={priority}
         />
       </div>
       <div className="work-card__body">

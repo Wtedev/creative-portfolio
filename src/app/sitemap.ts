@@ -1,37 +1,29 @@
 import type { MetadataRoute } from 'next';
 
 import { getPublishedProjects } from '@/lib/content/provider';
-import { getSiteUrl } from '@/lib/env';
+import { buildAbsoluteUrl, buildLanguageAlternates } from '@/lib/seo/urls';
 import { routing } from '@/i18n/routing';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = getSiteUrl();
   const projects = await getPublishedProjects();
 
   const homeEntries = routing.locales.map((locale) => ({
-    url: `${siteUrl}/${locale}`,
-    lastModified: new Date(),
+    url: buildAbsoluteUrl(locale, '/'),
     alternates: {
-      languages: Object.fromEntries(
-        routing.locales.map((altLocale) => [altLocale, `${siteUrl}/${altLocale}`]),
-      ),
+      languages: buildLanguageAlternates('/'),
     },
   }));
 
-  const projectEntries = projects.flatMap((project) =>
-    routing.locales.map((locale) => ({
-      url: `${siteUrl}/${locale}/project/${project.slug}`,
-      lastModified: new Date(),
+  const projectEntries = projects.flatMap((project) => {
+    const path = `/project/${project.slug}`;
+
+    return routing.locales.map((locale) => ({
+      url: buildAbsoluteUrl(locale, path),
       alternates: {
-        languages: Object.fromEntries(
-          routing.locales.map((altLocale) => [
-            altLocale,
-            `${siteUrl}/${altLocale}/project/${project.slug}`,
-          ]),
-        ),
+        languages: buildLanguageAlternates(path),
       },
-    })),
-  );
+    }));
+  });
 
   return [...homeEntries, ...projectEntries];
 }

@@ -31,7 +31,12 @@ export async function SelectedWorkSection({ projects }: SelectedWorkSectionProps
             className={gridItemClass(project.cardSize)}
             delay={index * 0.05}
           >
-            <ProjectCard project={project} locale={locale} viewLabel={tProject('viewCaseStudy')} />
+            <ProjectCard
+              project={project}
+              locale={locale}
+              viewLabel={tProject('viewCaseStudy')}
+              priority={index === 0}
+            />
           </RevealOnView>
         ))}
       </ul>

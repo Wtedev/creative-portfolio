@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 
 import { ProjectCoverMedia } from '@/components/media/project-cover-media';
 import type { AspectRatioPreset } from '@/types/project';
@@ -13,21 +13,6 @@ type ProjectHeroMediaProps = {
 };
 
 export function ProjectHeroMedia({ cover, alt, slug, aspect }: ProjectHeroMediaProps) {
-  const reducedMotion = useReducedMotion();
-
-  if (reducedMotion) {
-    return (
-      <ProjectCoverMedia
-        cover={cover}
-        alt={alt}
-        variant="wide"
-        aspect={aspect}
-        priority
-        layoutId={`project-cover-${slug}`}
-      />
-    );
-  }
-
   return (
     <motion.div
       layoutId={`project-cover-${slug}`}

@@ -16,6 +16,16 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+      testMatch: /(smoke|seo)\.spec\.ts/,
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+      testMatch: /(smoke|seo)\.spec\.ts/,
+    },
   ],
   webServer: {
     command: 'pnpm dev',

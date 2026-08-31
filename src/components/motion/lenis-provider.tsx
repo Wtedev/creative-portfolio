@@ -33,6 +33,14 @@ export function LenisProvider({ children }: LenisProviderProps) {
     };
     frame = requestAnimationFrame(raf);
 
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        lenis.stop();
+      } else {
+        lenis.start();
+      }
+    };
+
     const onAnchorClick = (event: MouseEvent) => {
       const target = event.target;
       if (!(target instanceof Element)) return;
@@ -46,10 +54,12 @@ export function LenisProvider({ children }: LenisProviderProps) {
       lenis.scrollTo(element, { offset: -80 });
     };
 
+    document.addEventListener('visibilitychange', onVisibilityChange);
     document.addEventListener('click', onAnchorClick);
 
     return () => {
       cancelAnimationFrame(frame);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
       document.removeEventListener('click', onAnchorClick);
       lenis.destroy();
       lenisRef.current = null;

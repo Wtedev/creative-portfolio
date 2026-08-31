@@ -110,6 +110,8 @@
 
 ## Phase 6 — QA, Performance, SEO and Launch
 
+**Status:** Complete (see `docs/13-phase06-production-readiness.md`).
+
 **Objective:** Production readiness.
 
 **Deliverables:**

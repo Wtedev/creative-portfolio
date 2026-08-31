@@ -5,6 +5,7 @@ export const manrope = Manrope({
   variable: '--font-manrope',
   display: 'swap',
   weight: ['400', '500', '600', '700'],
+  adjustFontFallback: true,
 });
 
 export const ibmPlexArabic = IBM_Plex_Sans_Arabic({
@@ -12,4 +13,5 @@ export const ibmPlexArabic = IBM_Plex_Sans_Arabic({
   variable: '--font-ibm-plex-arabic',
   display: 'swap',
   weight: ['400', '500', '600', '700'],
+  adjustFontFallback: true,
 });

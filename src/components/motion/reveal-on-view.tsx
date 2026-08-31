@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 
 type RevealOnViewProps = {
@@ -16,13 +16,7 @@ export function RevealOnView({
   delay = 0,
   as = 'div',
 }: RevealOnViewProps) {
-  const reducedMotion = useReducedMotion();
   const Component = motion[as];
-
-  if (reducedMotion) {
-    const StaticTag = as;
-    return <StaticTag className={className}>{children}</StaticTag>;
-  }
 
   return (
     <Component

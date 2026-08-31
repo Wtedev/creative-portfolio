@@ -11,6 +11,7 @@ Production-grade bilingual portfolio for an **Art Director & Creative Developer*
 - **Theming:** `next-themes`
 - **Motion:** Motion, Lenis (Phase 04+)
 - **Quality pass:** Phase 05 bilingual / theme / responsive audit documented in `docs/12-phase05-bilingual-theme-responsive.md`
+- **Launch readiness:** Phase 06 performance, SEO, accessibility, and launch guide in `docs/13-phase06-production-readiness.md`
 
 ## Installation
 
@@ -95,9 +96,10 @@ docs/                   # Product and implementation documentation
 
 - [x] Phase 1 — Foundation
 - [x] Phase 2 — CMS and admin experience
-- [ ] Phase 3 — Visual system and homepage design
-- [ ] Phase 4: Case studies, motion, Lenis scroll
-- [ ] Phase 5: Bilingual and responsive polish
-- [ ] Phase 6: QA, performance, launch
+- [x] Phase 3 — Visual system and homepage design
+- [x] Phase 4 — Case studies, motion, Lenis scroll
+- [x] Phase 5 — Bilingual and responsive polish
+- [x] Phase 6 — QA, performance, launch readiness
 
 See `docs/02-implementation-plan.md` for the full roadmap.
+See `docs/13-phase06-production-readiness.md` for the launch checklist.
