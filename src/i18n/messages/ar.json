@@ -25,17 +25,10 @@
     "discussRole": "ناقش فرصة وظيفية",
     "startProject": "ابدأ مشروعًا",
     "exploreWork": "استكشف أعمالي",
-    "folderInstruction": "اسحب بطاقات المشاريع لاستكشافها، أو افتحها مباشرة.",
-    "resetFolder": "أعد ترتيب المجلد",
-    "openProject": "افتح دراسة الحالة",
-    "returnToFolder": "أعد إلى المجلد",
-    "selectedWorks": "أعمال مختارة",
-    "facets": {
-      "idea": "فكرة",
-      "direction": "توجيه",
-      "system": "نظام",
-      "experience": "تجربة"
-    }
+    "folderInstruction": "اسحب بطاقة المشروع لإلقاء نظرة أقرب، وستعود عند إفلاتها.",
+    "folderInstructionTouch": "اضغط على بطاقة المشروع لفتح دراسة الحالة.",
+    "openProject": "افتح المشروع",
+    "selectedWorks": "أعمال مختارة"
   },
   "sections": {
     "work": "أعمال مختارة",

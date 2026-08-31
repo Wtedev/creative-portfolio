@@ -25,17 +25,10 @@
     "discussRole": "Discuss a Role",
     "startProject": "Start a Project",
     "exploreWork": "Explore My Work",
-    "folderInstruction": "Drag project cards to explore, or open them directly.",
-    "resetFolder": "Reset folder",
-    "openProject": "Open case study",
-    "returnToFolder": "Return to folder",
-    "selectedWorks": "Selected works",
-    "facets": {
-      "idea": "Idea",
-      "direction": "Direction",
-      "system": "System",
-      "experience": "Experience"
-    }
+    "folderInstruction": "Drag a project card to take a closer look. It returns when released.",
+    "folderInstructionTouch": "Tap a project card to open the case study.",
+    "openProject": "Open project",
+    "selectedWorks": "Selected works"
   },
   "sections": {
     "work": "Selected Work",

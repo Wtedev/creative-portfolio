@@ -2,93 +2,77 @@
 
 ## Reference Interpretation
 
-The attached reference informed only:
+The reference informed only material, depth, and hierarchy:
 
-- Central folder metaphor as a container for creative work
-- Layered project fragments emerging from a translucent pocket
-- Editorial title hierarchy above a controlled central composition
-- Relationship between title, folder, and selected work
+- Translucent folder as central object
+- Project cards emerging from the pocket
+- Editorial title separate from the interactive stack
+- Frosted glass, rounded forms, luminous background
 
-Intentionally **not** copied:
+Not copied: green palette, reference artwork, exact positions, social chrome, floating category clutter.
 
-- Exact typography, green/blue treatment, pill labels, metadata strip
-- Card arrangement, reference artwork, and creator composition
-- Brand marks and social chrome on the folder face
+## Concept
 
-## Original Concept
+**Luminous Frosted Project Folder** — violet/cyan glass pocket with a two-column Hero:
 
-**Luminous Glass Project Folder** — a violet/cyan glass pocket belonging to the existing Luminous Systems direction. Fragments represent Ideas → Direction → Systems → Experiences. Visitors may drag sheets to inspect them, return them to the pocket, or open case studies directly.
+- **Copy column:** eyebrow, H1, statement, CTAs, explore link
+- **Folder column:** compact folder with unique published project cards
+
+Drag is **temporary only**: pull a card to inspect, release, and it springs back to its slot. No reset, return, or persistent inspection states.
 
 ## Architecture
 
 ```
-src/features/home/hero-section.tsx          Server Component (copy + data)
-src/components/hero/folder-scene.tsx        Client orchestration
-src/components/hero/folder-shell.tsx        Decorative CSS folder layers
+src/features/home/hero-section.tsx
+src/components/hero/folder-scene.tsx
+src/components/hero/folder-shell.tsx
 src/components/hero/draggable-project-fragment.tsx
-src/components/hero/folder-reset-control.tsx
-src/lib/motion/folder-layout.ts             Positions / clamp helpers
-src/lib/motion/drag-intent.ts               Click-versus-drag threshold
-src/lib/content/hero-fragments.ts           Published-project mapping
+src/components/hero/decorative-folder-sheet.tsx
+src/lib/motion/folder-layout.ts
+src/lib/motion/drag-intent.ts
+src/lib/content/hero-fragments.ts
 src/styles/folder-hero.css
 ```
 
-## Drag State Model
+## Interaction Model
 
-States per fragment: `stacked` → `dragging` → `inspecting` | `returning` → `stacked`.
+States: `stacked` → `dragging` → `returning` → `stacked`
 
-- Drop near the pocket returns to stack
-- Drop elsewhere settles into a safe inspection offset
-- Reset restores deterministic art-directed slots
-- Locale/route changes reset the scene
-- Continuous coordinates use Motion transforms; React state holds discrete status only
+- Release always restores the exact art-directed slot
+- Spring: stiffness 420, damping 34, mass 0.72
+- Reduced motion: instant return
+- `dragMomentum={false}`, `dragElastic={0.06}`
+- Click without drag opens the project (8px threshold)
 
-## Click Versus Drag
+## Data
 
-Movement threshold: **8px** (`drag-intent.ts`). Genuine drags suppress link navigation. Keyboard and unmodified clicks still open the case study via an explicit project link inside each fragment.
+- One card per unique published project (max 4)
+- Single fallback project → one real card + up to two decorative abstract sheets (aria-hidden, not draggable)
+- No facet duplication or repeated sample slugs
 
-## Keyboard / Touch / Reduced Motion
+## Card Content
 
-- Keyboard: focusable project links; Enter opens the case study; Reset is a labeled button
-- Touch / narrow: drag disabled; shallow static stack; page scroll preserved (`touch-action: pan-y`)
-- Reduced motion: no springs/momentum; static stack with links and Reset
+Cover, title, optional category, index, restrained arrow. Semantic link: `Open project: [title]`.
 
-## Arabic Treatment
+## Layout
 
-Does not italicize Arabic. `مخرجة فنية` uses heavier weight; `ومطوّرة إبداعية` uses secondary weight/color. IBM Plex Sans Arabic only.
+Desktop: 5/7 grid split. Title copy left, folder right. `white-space: nowrap` for English “Art Director” where space allows.
 
-## Font Decision
+Mobile: stacked, compact folder (~17–20rem), decorative sheets hidden, touch instruction instead of drag copy when drag is disabled.
 
-| Role               | Face                    | Source                   | Notes                                   |
-| ------------------ | ----------------------- | ------------------------ | --------------------------------------- |
-| English expressive | **Fraunces** italic 500 | `next/font/google` (OFL) | Loaded only on `en` routes with Manrope |
-| English technical  | Manrope                 | existing                 | Sans line of the H1                     |
-| Arabic             | IBM Plex Sans Arabic    | existing                 | No new Arabic display face              |
+## Accessibility
 
-License: SIL Open Font License via Google Fonts. Italic-only subset minimizes extra bytes. Remeasure LCP after deploy; if fonts regress further, fall back to system serif and keep Fraunces optional.
-
-## Data Contract
-
-`HeroProjectFragment` fields only. Source: published `ProjectSummary[]` from the content provider. With a single fallback project, the folder pads to four **editorial facet sheets** (Idea / Direction / System / Experience) that share the real project slug — not invented case studies.
+- One semantic H1 per locale
+- Keyboard-accessible project links with visible focus
+- Decorative sheets `aria-hidden`
+- No Reset/Return copy in UI or screen-reader instructions
 
 ## Theme
 
-Dark: aubergine glass, violet border, cyan sheen. Light: frosted pale-violet surface, stronger borders, reduced glow. Backdrop-filter has opaque fallback.
-
-## Performance Notes
-
-Local production spot check after Phase 07 (localhost, fallback content):
-
-| Metric        | Phase 06 `/en` | Phase 07 `/en`         |
-| ------------- | -------------- | ---------------------- |
-| Performance   | 92             | 86                     |
-| Accessibility | 100            | 98→fixed heading order |
-| LCP           | 3.4s           | ~3.9s                  |
-
-Primary cost: Fraunces italic + folder client JS. Acceptable for the interaction; remotes with local WOFF2 and CDN caching should recover. No video or multi-priority LCP images were added.
+Dark/light retain existing tokens. Reduced blur, glow, and borders versus earlier iterations.
 
 ## Known Limitations
 
-- Fallback content still uses one sample project (facet sheets share that slug)
-- Real covers/OG art still required before launch
-- WebKit Playwright binary may still segfault on some macOS hosts (see Phase 06)
+- Fallback content still uses one sample project
+- Real covers/OG art required before launch
+- WebKit Playwright may segfault on some macOS hosts (Phase 06)

@@ -6,54 +6,62 @@ import { useRef, type CSSProperties, type PointerEvent as ReactPointerEvent } fr
 import { PlaceholderMedia } from '@/components/ui/placeholder-media';
 import { Link } from '@/i18n/navigation';
 import { createDragIntentTracker } from '@/lib/motion/drag-intent';
-import type { FolderFragmentState, HeroProjectFragment } from '@/lib/motion/folder-layout';
+import {
+  FOLDER_DRAG_CONSTRAINTS,
+  FOLDER_SPRING,
+  type FolderFragmentState,
+  type HeroProjectFragment,
+} from '@/lib/motion/folder-layout';
 
 type DraggableProjectFragmentProps = {
   fragment: HeroProjectFragment;
   state: FolderFragmentState;
-  initial: { x: number; y: number; rotate: number; z: number };
+  slot: { x: number; y: number; rotate: number; z: number };
   openLabel: string;
   dragEnabled: boolean;
   reducedMotion: boolean;
   onDragStart: (id: string) => void;
-  onDragEnd: (id: string, info: PanInfo) => void;
-  onReturn: (id: string) => void;
-  returnLabel: string;
+  onDragEnd: (id: string, dragged: boolean) => void;
+  onReturnComplete: (id: string) => void;
 };
 
 export function DraggableProjectFragment({
   fragment,
   state,
-  initial,
+  slot,
   openLabel,
   dragEnabled,
   reducedMotion,
   onDragStart,
   onDragEnd,
-  onReturn,
-  returnLabel,
+  onReturnComplete,
 }: DraggableProjectFragmentProps) {
   const intentRef = useRef(createDragIntentTracker());
   const suppressClickRef = useRef(false);
+  const draggedRef = useRef(false);
 
   const style = {
     ['--fragment-accent' as string]: fragment.accentColor ?? 'var(--color-accent)',
-    zIndex: state === 'dragging' ? 40 : state === 'inspecting' ? 20 + fragment.index : initial.z,
+    zIndex: state === 'dragging' ? 40 : slot.z,
   } as CSSProperties;
 
   const handlePointerDown = (event: ReactPointerEvent) => {
     intentRef.current.start(event.clientX, event.clientY);
     suppressClickRef.current = false;
+    draggedRef.current = false;
   };
 
   const handleClickCapture = (event: React.MouseEvent) => {
-    if (suppressClickRef.current || intentRef.current.isDragging()) {
+    if (suppressClickRef.current || intentRef.current.isDragging() || draggedRef.current) {
       event.preventDefault();
       event.stopPropagation();
       suppressClickRef.current = false;
+      draggedRef.current = false;
       intentRef.current.reset();
     }
   };
+
+  const springTransition = reducedMotion ? { duration: 0 } : FOLDER_SPRING;
 
   return (
     <motion.article
@@ -62,20 +70,18 @@ export function DraggableProjectFragment({
       data-testid={`folder-fragment-${fragment.index}`}
       style={style}
       drag={dragEnabled}
-      dragMomentum={!reducedMotion}
-      dragElastic={0.12}
-      dragConstraints={{ left: -180, right: 180, top: -160, bottom: 120 }}
+      dragMomentum={false}
+      dragElastic={0.06}
+      dragConstraints={FOLDER_DRAG_CONSTRAINTS}
       initial={false}
       animate={
         state === 'stacked' || state === 'returning'
-          ? { x: initial.x, y: initial.y, rotate: initial.rotate, scale: 1 }
+          ? { x: slot.x, y: slot.y, rotate: slot.rotate, scale: 1 }
           : state === 'dragging'
-            ? { scale: reducedMotion ? 1 : 1.04, rotate: initial.rotate * 0.4 }
+            ? { scale: reducedMotion ? 1 : 1.02, rotate: slot.rotate * 0.25 }
             : undefined
       }
-      transition={
-        reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 320, damping: 28, mass: 0.8 }
-      }
+      transition={springTransition}
       onPointerDown={handlePointerDown}
       onDragStart={() => {
         suppressClickRef.current = true;
@@ -86,59 +92,59 @@ export function DraggableProjectFragment({
           (info.point?.x ?? 0) + info.offset.x,
           (info.point?.y ?? 0) + info.offset.y,
         );
-        if (hasMoved(info)) suppressClickRef.current = true;
+        if (hasMoved(info)) {
+          suppressClickRef.current = true;
+          draggedRef.current = true;
+        }
       }}
       onDragEnd={(_, info) => {
-        if (hasMoved(info)) suppressClickRef.current = true;
-        onDragEnd(fragment.id, info);
+        const dragged = hasMoved(info);
+        if (dragged) {
+          suppressClickRef.current = true;
+          draggedRef.current = true;
+        }
+        onDragEnd(fragment.id, dragged);
         intentRef.current.reset();
+      }}
+      onAnimationComplete={() => {
+        if (state === 'returning') {
+          onReturnComplete(fragment.id);
+        }
       }}
       onClickCapture={handleClickCapture}
     >
-      <div className="folder-fragment__sheet">
-        <div className="folder-fragment__body">
-          <p className="folder-fragment__meta text-label">
-            <span>{String(fragment.index + 1).padStart(2, '0')}</span>
-            {fragment.facetLabel ? <span>{fragment.facetLabel}</span> : null}
-            {fragment.category ? <span>{fragment.category}</span> : null}
-            {fragment.year ? <span dir="ltr">{fragment.year}</span> : null}
-          </p>
-          <p className="folder-fragment__title text-small">{fragment.title}</p>
-          <div className="folder-fragment__actions">
-            <Link
-              href={`/project/${fragment.slug}`}
-              className="folder-fragment__link text-link text-link--inline"
-              aria-label={`${openLabel}: ${fragment.title}`}
-              data-testid={`folder-fragment-link-${fragment.index}`}
-              onPointerDown={(event) => event.stopPropagation()}
-            >
-              {openLabel}
-            </Link>
-            {state === 'inspecting' ? (
-              <button
-                type="button"
-                className="folder-fragment__return"
-                onClick={() => onReturn(fragment.id)}
-                onPointerDown={(event) => event.stopPropagation()}
-              >
-                {returnLabel}
-              </button>
-            ) : null}
+      <Link
+        href={`/project/${fragment.slug}`}
+        className="folder-fragment__link"
+        aria-label={`${openLabel}: ${fragment.title}`}
+        data-testid={`folder-fragment-link-${fragment.index}`}
+        onPointerDown={(event) => event.stopPropagation()}
+      >
+        <div className="folder-fragment__sheet">
+          <div className="folder-fragment__media" aria-hidden={Boolean(fragment.cover)}>
+            {fragment.cover ? (
+              // eslint-disable-next-line @next/next/no-img-element -- lightweight hero thumbnails
+              <img src={fragment.cover} alt="" className="folder-fragment__image" loading="lazy" />
+            ) : (
+              <PlaceholderMedia
+                label={fragment.coverAlt}
+                variant="landscape"
+                className="folder-fragment__placeholder"
+              />
+            )}
+          </div>
+          <div className="folder-fragment__body">
+            <p className="folder-fragment__meta text-label">
+              <span>{String(fragment.index + 1).padStart(2, '0')}</span>
+              {fragment.category ? <span>{fragment.category}</span> : null}
+            </p>
+            <p className="folder-fragment__title">{fragment.title}</p>
+            <span className="folder-fragment__arrow" aria-hidden="true">
+              →
+            </span>
           </div>
         </div>
-        <div className="folder-fragment__media" aria-hidden={Boolean(fragment.cover)}>
-          {fragment.cover ? (
-            // eslint-disable-next-line @next/next/no-img-element -- lightweight hero thumbnails
-            <img src={fragment.cover} alt="" className="folder-fragment__image" loading="lazy" />
-          ) : (
-            <PlaceholderMedia
-              label={fragment.coverAlt}
-              variant={fragment.index % 2 === 0 ? 'landscape' : 'square'}
-              className="folder-fragment__placeholder"
-            />
-          )}
-        </div>
-      </div>
+      </Link>
     </motion.article>
   );
 }

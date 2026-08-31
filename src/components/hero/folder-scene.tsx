@@ -1,45 +1,30 @@
 'use client';
 
-import { type PanInfo } from 'motion/react';
-import { useCallback, useMemo, useState, useSyncExternalStore } from 'react';
+import { useCallback, useState, useSyncExternalStore } from 'react';
 import { usePathname } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 
+import { DecorativeFolderSheet } from '@/components/hero/decorative-folder-sheet';
 import { DraggableProjectFragment } from '@/components/hero/draggable-project-fragment';
-import { FolderResetControl } from '@/components/hero/folder-reset-control';
 import { FolderShell } from '@/components/hero/folder-shell';
+import type { HeroFolderContent } from '@/lib/content/hero-fragments';
 import {
-  getInspectOffset,
   getStackSlot,
   type FolderFragmentState,
   type HeroProjectFragment,
 } from '@/lib/motion/folder-layout';
 
 type FolderSceneProps = {
-  fragments: HeroProjectFragment[];
+  content: HeroFolderContent;
 };
 
 type FragmentRuntime = {
   state: FolderFragmentState;
-  x: number;
-  y: number;
-  rotate: number;
 };
 
-function createInitialRuntime(fragments: HeroProjectFragment[]): Record<string, FragmentRuntime> {
+function createInitialRuntime(projects: HeroProjectFragment[]): Record<string, FragmentRuntime> {
   return Object.fromEntries(
-    fragments.map((fragment) => {
-      const slot = getStackSlot(fragment.index);
-      return [
-        fragment.id,
-        {
-          state: 'stacked' as const,
-          x: slot.x,
-          y: slot.y,
-          rotate: slot.rotate,
-        },
-      ];
-    }),
+    projects.map((fragment) => [fragment.id, { state: 'stacked' as const }]),
   );
 }
 
@@ -81,17 +66,20 @@ function getServerTrue() {
   return true;
 }
 
-export function FolderScene({ fragments }: FolderSceneProps) {
+export function FolderScene({ content }: FolderSceneProps) {
   const t = useTranslations('hero');
   const locale = useLocale();
   const pathname = usePathname();
-  const sceneKey = `${locale}:${pathname}:${fragments.map((fragment) => fragment.id).join('|')}`;
-  const [runtime, setRuntime] = useState(() => createInitialRuntime(fragments));
+  const { projects, decorativeSheets } = content;
+  const sceneKey = `${locale}:${pathname}:${projects.map((fragment) => fragment.id).join('|')}`;
+  const [runtime, setRuntime] = useState(() => createInitialRuntime(projects));
   const [runtimeKey, setRuntimeKey] = useState(sceneKey);
+  const [activeDragId, setActiveDragId] = useState<string | null>(null);
 
   if (runtimeKey !== sceneKey) {
     setRuntimeKey(sceneKey);
-    setRuntime(createInitialRuntime(fragments));
+    setRuntime(createInitialRuntime(projects));
+    setActiveDragId(null);
   }
 
   const reducedMotion = useSyncExternalStore(
@@ -106,123 +94,89 @@ export function FolderScene({ fragments }: FolderSceneProps) {
   );
   const narrow = useSyncExternalStore(subscribeNarrow, getNarrowSnapshot, getServerFalse);
 
-  const dragEnabled = !reducedMotion && (!narrow || finePointer);
-
-  const dirty = useMemo(
-    () => Object.values(runtime).some((entry) => entry.state !== 'stacked'),
-    [runtime],
-  );
-
-  const reset = useCallback(() => {
-    setRuntime(createInitialRuntime(fragments));
-  }, [fragments]);
+  const dragEnabled = !reducedMotion && finePointer && !narrow;
+  const stackScale = narrow ? 0.72 : 1;
 
   const handleDragStart = useCallback((id: string) => {
+    setActiveDragId(id);
     setRuntime((current) => ({
       ...current,
-      [id]: { ...current[id]!, state: 'dragging' },
+      [id]: { state: 'dragging' },
     }));
   }, []);
 
-  const handleReturn = useCallback(
-    (id: string) => {
-      const fragment = fragments.find((entry) => entry.id === id);
-      if (!fragment) return;
-      const slot = getStackSlot(fragment.index);
-      setRuntime((current) => ({
-        ...current,
-        [id]: {
-          state: 'returning',
-          x: slot.x,
-          y: slot.y,
-          rotate: slot.rotate,
-        },
-      }));
-      window.setTimeout(
-        () => {
-          setRuntime((current) => ({
-            ...current,
-            [id]: {
-              state: 'stacked',
-              x: slot.x,
-              y: slot.y,
-              rotate: slot.rotate,
-            },
-          }));
-        },
-        reducedMotion ? 0 : 280,
-      );
-    },
-    [fragments, reducedMotion],
-  );
-
   const handleDragEnd = useCallback(
-    (id: string, info: PanInfo) => {
-      const fragment = fragments.find((entry) => entry.id === id);
-      if (!fragment) return;
-      const slot = getStackSlot(fragment.index);
-      const offsetX = info.offset.x;
-      const offsetY = info.offset.y;
-      const nearPocket = Math.abs(offsetX) < 48 && offsetY > -20 && offsetY < 80;
-
-      if (nearPocket) {
-        handleReturn(id);
+    (id: string, dragged: boolean) => {
+      setActiveDragId(null);
+      if (!dragged) {
+        setRuntime((current) => ({
+          ...current,
+          [id]: { state: 'stacked' },
+        }));
         return;
       }
 
-      const inspect = getInspectOffset(fragment.index);
-      const nextX = Math.max(-170, Math.min(170, slot.x + offsetX * 0.35 + inspect.x * 0.25));
-      const nextY = Math.max(-150, Math.min(100, slot.y + offsetY * 0.35 + inspect.y * 0.2));
-
       setRuntime((current) => ({
         ...current,
-        [id]: {
-          state: 'inspecting',
-          x: nextX,
-          y: nextY,
-          rotate: inspect.rotate,
-        },
+        [id]: { state: reducedMotion ? 'stacked' : 'returning' },
       }));
     },
-    [fragments, handleReturn],
+    [reducedMotion],
   );
 
-  if (fragments.length === 0) {
+  const handleReturnComplete = useCallback((id: string) => {
+    setRuntime((current) => ({
+      ...current,
+      [id]: { state: 'stacked' },
+    }));
+  }, []);
+
+  if (projects.length === 0) {
     return null;
   }
 
   return (
-    <div className="folder-scene" data-narrow={narrow ? 'true' : 'false'}>
-      <p className="folder-scene__instruction text-small">{t('folderInstruction')}</p>
-      <FolderShell label={t('selectedWorks')}>
-        {fragments.map((fragment) => {
-          const entry = runtime[fragment.id] ?? {
-            state: 'stacked' as const,
-            ...getStackSlot(fragment.index),
+    <div
+      className="folder-scene"
+      data-narrow={narrow ? 'true' : 'false'}
+      data-dragging={activeDragId ? 'true' : 'false'}
+      style={{ ['--folder-light' as string]: activeDragId ? 0.38 : 0.18 }}
+    >
+      {dragEnabled ? (
+        <p className="folder-scene__instruction text-small">{t('folderInstruction')}</p>
+      ) : (
+        <p className="folder-scene__instruction text-small">{t('folderInstructionTouch')}</p>
+      )}
+      <FolderShell label={t('selectedWorks')} dragging={Boolean(activeDragId)}>
+        {decorativeSheets.map((sheet) => (
+          <DecorativeFolderSheet key={sheet.id} sheet={sheet} scale={stackScale} />
+        ))}
+        {projects.map((fragment) => {
+          const entry = runtime[fragment.id] ?? { state: 'stacked' as const };
+          const slot = getStackSlot(fragment.index);
+          const scaledSlot = {
+            x: slot.x * stackScale,
+            y: slot.y * stackScale,
+            rotate: slot.rotate,
+            z: slot.z,
           };
+
           return (
             <DraggableProjectFragment
               key={fragment.id}
               fragment={fragment}
               state={entry.state}
-              initial={{
-                x: entry.x,
-                y: entry.y,
-                rotate: entry.rotate,
-                z: getStackSlot(fragment.index).z,
-              }}
+              slot={scaledSlot}
               openLabel={t('openProject')}
-              returnLabel={t('returnToFolder')}
               dragEnabled={dragEnabled}
               reducedMotion={reducedMotion}
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
-              onReturn={handleReturn}
+              onReturnComplete={handleReturnComplete}
             />
           );
         })}
       </FolderShell>
-      <FolderResetControl label={t('resetFolder')} onReset={reset} disabled={!dirty} />
     </div>
   );
 }

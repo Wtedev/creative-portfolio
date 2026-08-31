@@ -1,60 +1,60 @@
 import { isPublishedStatus } from '@/lib/content/validation';
-import { formatYear, getLocalizedValue } from '@/lib/utilities/locale';
+import { getLocalizedValue } from '@/lib/utilities/locale';
 import {
   FACET_ACCENTS,
+  MAX_DECORATIVE_SHEETS,
   MAX_HERO_FRAGMENTS,
+  type HeroDecorativeSheet,
   type HeroProjectFragment,
 } from '@/lib/motion/folder-layout';
 import type { Locale } from '@/types/global';
 import type { ProjectSummary } from '@/types/project';
 
-const FACET_KEYS = ['idea', 'direction', 'system', 'experience'] as const;
-
-type FacetLabels = Record<(typeof FACET_KEYS)[number], string>;
+export type HeroFolderContent = {
+  projects: HeroProjectFragment[];
+  decorativeSheets: HeroDecorativeSheet[];
+};
 
 /**
- * Build a deterministic Hero fragment list from published project summaries.
- * With fewer than MAX projects, supplements with editorial facet sheets of the
- * first project (same slug) — not fabricated separate case studies.
+ * Build Hero folder content from unique published projects only.
+ * One project → one interactive card; optional decorative sheets for depth.
  */
+export function buildHeroFolderContent(
+  projects: ProjectSummary[],
+  locale: Locale,
+  maxProjects = MAX_HERO_FRAGMENTS,
+): HeroFolderContent {
+  const published = dedupePublishedProjects(projects).slice(0, maxProjects);
+  if (published.length === 0) {
+    return { projects: [], decorativeSheets: [] };
+  }
+
+  if (published.length === 1) {
+    const decorativeCount = Math.min(MAX_DECORATIVE_SHEETS, 2);
+    const decorativeSheets: HeroDecorativeSheet[] = Array.from(
+      { length: decorativeCount },
+      (_, index) => ({
+        id: `decorative-${index}`,
+        index,
+        accentColor: FACET_ACCENTS[index % FACET_ACCENTS.length]!,
+      }),
+    );
+    const projects = [toFragment(published[0]!, locale, decorativeCount)];
+    return { projects, decorativeSheets };
+  }
+
+  return {
+    projects: published.map((project, index) => toFragment(project, locale, index)),
+    decorativeSheets: [],
+  };
+}
+
+/** @deprecated Use buildHeroFolderContent */
 export function buildHeroFragments(
   projects: ProjectSummary[],
   locale: Locale,
-  facetLabels: FacetLabels,
-  max = MAX_HERO_FRAGMENTS,
 ): HeroProjectFragment[] {
-  const published = filterPublishedSummaries(projects).slice(0, max);
-  if (published.length === 0) return [];
-
-  if (published.length >= max) {
-    return published.map((project, index) => toFragment(project, locale, index));
-  }
-
-  const fragments: HeroProjectFragment[] = published.map((project, index) =>
-    toFragment(project, locale, index),
-  );
-
-  const seed = published[0]!;
-  let nextIndex = fragments.length;
-
-  while (fragments.length < max) {
-    const facetKey = FACET_KEYS[nextIndex % FACET_KEYS.length]!;
-    fragments.push({
-      id: `${seed._id}-facet-${facetKey}-${nextIndex}`,
-      slug: seed.slug,
-      title: getLocalizedValue(seed.title, locale),
-      category: seed.categories[0] ?? seed.client,
-      year: formatYear(seed.year, locale),
-      cover: seed.cover,
-      coverAlt: getLocalizedValue(seed.coverAlt, locale),
-      accentColor: FACET_ACCENTS[nextIndex % FACET_ACCENTS.length],
-      facetLabel: facetLabels[facetKey],
-      index: nextIndex,
-    });
-    nextIndex += 1;
-  }
-
-  return fragments;
+  return buildHeroFolderContent(projects, locale).projects;
 }
 
 function toFragment(project: ProjectSummary, locale: Locale, index: number): HeroProjectFragment {
@@ -62,13 +62,21 @@ function toFragment(project: ProjectSummary, locale: Locale, index: number): Her
     id: project._id,
     slug: project.slug,
     title: getLocalizedValue(project.title, locale),
-    category: project.categories[0] ?? project.client,
-    year: formatYear(project.year, locale),
+    category: project.categories[0],
     cover: project.cover,
     coverAlt: getLocalizedValue(project.coverAlt, locale),
     accentColor: project.accentColor ?? FACET_ACCENTS[index % FACET_ACCENTS.length],
     index,
   };
+}
+
+function dedupePublishedProjects(projects: ProjectSummary[]): ProjectSummary[] {
+  const seen = new Set<string>();
+  return filterPublishedSummaries(projects).filter((project) => {
+    if (seen.has(project.slug)) return false;
+    seen.add(project.slug);
+    return true;
+  });
 }
 
 export function filterPublishedSummaries(projects: ProjectSummary[]): ProjectSummary[] {
